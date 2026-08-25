@@ -42,6 +42,7 @@ RUN python -m pip install --upgrade "pip>=25,<27" \
         -r requirements/runtime.txt \
         -r requirements/models.txt \
         -r requirements/build.txt \
+        -r requirements/nvshmem.txt \
         -c requirements/constraints-cu124.txt \
     && python -m pip install --no-cache-dir --force-reinstall --no-binary=mpi4py "mpi4py==4.1.2"
 
@@ -68,7 +69,7 @@ RUN if [ ! -f submodules/diffusers/setup.py ]; then \
         && rm -rf submodules/diffusers/.git; \
     fi \
     && python -m pip install -e submodules/diffusers \
-    && TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
+    && DIFLOW_REQUIRE_NVSHMEM=1 TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
         python -m pip install . --no-build-isolation \
     && python -c "import diflow; import diflow.backend.scheduler._scheduling_core; import diflow.backend.data_engine._data_engine"
 

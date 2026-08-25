@@ -12,6 +12,7 @@ import sys
 import threading
 import time
 import traceback
+import uuid
 from collections import OrderedDict
 from datetime import datetime
 from pathlib import Path
@@ -24,10 +25,11 @@ import zmq
 from mpi4py import MPI
 from PIL import Image
 
-from diflow.backend.data_engine.engine.nvshmem_data_engine import (
+from diflow.backend.data_engine.engine import (
     FetchingTask,
     FreeingTask,
-    NvshmemDataEngine,
+    create_data_engine,
+    resolve_transfer_backend,
 )
 from diflow.interface.node_io import string_to_type, type_to_string
 from diflow.interface.workflow import WorkflowNode
@@ -74,6 +76,10 @@ class DistributedWorker:
         global_rank: int,
         hostname: str,
         prefetch_models_config: str,
+        world_size: int,
+        transfer_backend: str,
+        host_transfer_dir: str,
+        transfer_session_id: str,
         base_port: int = 14000,
     ):
         self.local_rank = local_rank
@@ -81,6 +87,8 @@ class DistributedWorker:
         self.hostname = hostname
         self.base_port = base_port
         self.prefetch_models_config = prefetch_models_config
+        self.world_size = world_size
+        self.transfer_backend = resolve_transfer_backend(transfer_backend)
 
         # ZMQ setup
         self.context = zmq.Context()
@@ -97,7 +105,9 @@ class DistributedWorker:
         assert torch.cuda.is_available()
         self.device = f"cuda:{self.local_rank}"
         self.max_gpu_memory_fraction = 0.85
-        self.nvshmem_memory = 8 * 1024 * 1024 * 1024
+        self.nvshmem_memory = (
+            8 * 1024 * 1024 * 1024 if self.transfer_backend == "nvshmem" else 0
+        )
         self.total_gpu_memory = torch.cuda.get_device_properties(
             self.local_rank
         ).total_memory
@@ -105,14 +115,17 @@ class DistributedWorker:
             self.total_gpu_memory * self.max_gpu_memory_fraction - self.nvshmem_memory
         )
         self.logger.info(
-            f"Available GPU memory: {self.available_gpu_memory / (1024**3):.2f} GiB, NVSHMEM memory: {self.nvshmem_memory / (1024**3):.2f} GiB, Total GPU memory: {self.total_gpu_memory / (1024**3):.2f} GiB, Max GPU memory fraction: {self.max_gpu_memory_fraction}"
+            f"Available GPU memory: {self.available_gpu_memory / (1024**3):.2f} GiB, transfer backend: {self.transfer_backend}, reserved transfer memory: {self.nvshmem_memory / (1024**3):.2f} GiB, Total GPU memory: {self.total_gpu_memory / (1024**3):.2f} GiB, Max GPU memory fraction: {self.max_gpu_memory_fraction}"
         )
 
-        # Setup NVSHMEM
-        self.data_engine = NvshmemDataEngine(
+        self.data_engine = create_data_engine(
+            backend=self.transfer_backend,
             arena_size=self.nvshmem_memory,
             device_id=self.local_rank,
             worker_id=self.global_rank,
+            world_size=self.world_size,
+            host_transfer_dir=host_transfer_dir,
+            transfer_session_id=transfer_session_id,
         )
 
         # Model management for LRU caching
@@ -491,21 +504,17 @@ class DistributedWorker:
                         # )
                         # Retrieve tensor from remote worker
                         tensor = self.fetch_tensor(
-                            remote_ptr=remote_tensor_info["ptr"],
+                            tensor_info=remote_tensor_info,
                             size=remote_tensor_info["size"],
                             dtype=string_to_type(remote_tensor_info["dtype"]),
-                            remote_nvshmem_pe=remote_worker_rank,
+                            remote_worker_rank=remote_worker_rank,
                             tensor_id=input_info.name,
                         )
                         node_inputs[input_name] = tensor
                         if request_id not in self.tensor_map:
                             self.tensor_map[request_id] = {}
                         self.tensor_map[request_id][input_info.name] = tensor
-                        tensor_infos[input_info.name] = {
-                            "ptr": tensor.data_ptr(),
-                            "size": tensor.size(),
-                            "dtype": type_to_string(tensor.dtype),
-                        }
+                        tensor_infos[input_info.name] = self._tensor_info(tensor)
                     else:
                         # Input is in local storage
                         if input_info.name not in self.tensor_map[request_id]:
@@ -743,15 +752,13 @@ class DistributedWorker:
                         notified_tensor_infos = {}
                         for name, value in generator_results.items():
                             if isinstance(value, torch.Tensor):
-                                stored_tensor = self.store_tensor_in_nvshmem(
+                                stored_tensor = self.store_tensor_for_transfer(
                                     request_id, output_map[name], value[i : i + 1]
                                 )
                                 notified_tensor_ids.add(output_map[name])
-                                notified_tensor_infos[output_map[name]] = {
-                                    "ptr": stored_tensor.data_ptr(),
-                                    "size": stored_tensor.size(),
-                                    "dtype": type_to_string(stored_tensor.dtype),
-                                }
+                                notified_tensor_infos[output_map[name]] = (
+                                    self._tensor_info(stored_tensor)
+                                )
                             else:
                                 raise ValueError(f"Unsupported type: {type(value)}")
 
@@ -800,15 +807,13 @@ class DistributedWorker:
                         notified_tensor_infos = {}
                         for name, value in generator_results.items():
                             if isinstance(value, torch.Tensor):
-                                stored_tensor = self.store_tensor_in_nvshmem(
+                                stored_tensor = self.store_tensor_for_transfer(
                                     request_id, output_map[name], value
                                 )
                                 notified_tensor_ids.add(output_map[name])
-                                notified_tensor_infos[output_map[name]] = {
-                                    "ptr": stored_tensor.data_ptr(),
-                                    "size": stored_tensor.size(),
-                                    "dtype": type_to_string(stored_tensor.dtype),
-                                }
+                                notified_tensor_infos[output_map[name]] = (
+                                    self._tensor_info(stored_tensor)
+                                )
                             else:
                                 raise ValueError(f"Unsupported type: {type(value)}")
                         notification_data = [
@@ -836,15 +841,7 @@ class DistributedWorker:
                         input_info_name in self.tensor_map[request_id]
                     ), f"Lazy input {input_info_name} is not found in tensor_map for request {request_id}"
                     tensor = self.tensor_map[request_id][input_info_name]
-                    tensor_infos.update(
-                        {
-                            input_info_name: {
-                                "ptr": tensor.data_ptr(),
-                                "size": tensor.size(),
-                                "dtype": type_to_string(tensor.dtype),
-                            }
-                        }
-                    )
+                    tensor_infos[input_info_name] = self._tensor_info(tensor)
 
         if self.logger.level == logging.DEBUG:
             torch.cuda.synchronize(self.local_rank)
@@ -885,15 +882,11 @@ class DistributedWorker:
                     )
                     continue
 
-                stored_tensor = self.store_tensor_in_nvshmem(
+                stored_tensor = self.store_tensor_for_transfer(
                     request_id, output_map[name], value
                 )
 
-                tensor_infos[output_map[name]] = {
-                    "ptr": stored_tensor.data_ptr(),
-                    "size": stored_tensor.size(),
-                    "dtype": type_to_string(stored_tensor.dtype),
-                }
+                tensor_infos[output_map[name]] = self._tensor_info(stored_tensor)
 
             if self.logger.level == logging.DEBUG:
                 torch.cuda.synchronize(self.local_rank)
@@ -1052,10 +1045,10 @@ class DistributedWorker:
             self.data_engine.submit_fetch_task(
                 FetchingTask(
                     id=tensor_id,
-                    remote_address=tensor_info["ptr"],
+                    tensor_info=tensor_info,
                     size=list(tensor_info["size"]),
                     dtype=string_to_type(tensor_info["dtype"]),
-                    remote_nvshmem_pe=worker_rank,
+                    remote_worker_rank=worker_rank,
                 )
             )
 
@@ -1313,24 +1306,21 @@ class DistributedWorker:
 
             return model_instance
 
-    def create_tensor(self, size: Sequence[int], dtype: torch.dtype):
-        return self.data_engine.create_tensor(size, dtype=dtype)
-
     def fetch_tensor(
         self,
         tensor_id: str,
-        remote_ptr: int,
+        tensor_info: Dict[str, Any],
         size: Sequence[int],
         dtype: torch.dtype,
-        remote_nvshmem_pe: int,
+        remote_worker_rank: int,
     ):
         self.data_engine.submit_fetch_task(
             FetchingTask(
                 id=tensor_id,
-                remote_address=remote_ptr,
+                tensor_info=tensor_info,
                 size=list(size),
                 dtype=dtype,
-                remote_nvshmem_pe=remote_nvshmem_pe,
+                remote_worker_rank=remote_worker_rank,
             )
         )
         return self.data_engine.get(tensor_id=tensor_id)
@@ -1338,25 +1328,31 @@ class DistributedWorker:
     def free_tensor(self, tensor: torch.Tensor):
         self.data_engine.submit_free_task(FreeingTask(tensor))
 
-    def store_tensor_in_nvshmem(
+    def _tensor_info(self, tensor: torch.Tensor) -> Dict[str, Any]:
+        return {
+            **self.data_engine.get_tensor_handle(tensor),
+            "size": list(tensor.size()),
+            "dtype": type_to_string(tensor.dtype),
+        }
+
+    def store_tensor_for_transfer(
         self, request_id: str, tensor_id: str, tensor: torch.Tensor
     ) -> torch.Tensor:
         if request_id not in self.tensor_map:
             self.tensor_map[request_id] = {}
 
-        allocated_tensor = self.create_tensor(
-            size=tensor.size(),
-            dtype=tensor.dtype,
-        )
-        allocated_tensor.copy_(tensor, True)
-
-        self.tensor_map[request_id][tensor_id] = allocated_tensor
+        stored_tensor = self.data_engine.store_tensor(tensor)
+        self.tensor_map[request_id][tensor_id] = stored_tensor
 
         self.logger.debug(
-            f"Tensor {tensor_id} is allocated in nvshmem, ptr: {allocated_tensor.data_ptr()}, size: {allocated_tensor.size()}, dtype: {allocated_tensor.dtype}"
+            "Tensor %s is stored by the %s transfer backend: size=%s, dtype=%s",
+            tensor_id,
+            self.transfer_backend,
+            tuple(stored_tensor.size()),
+            stored_tensor.dtype,
         )
 
-        return allocated_tensor
+        return stored_tensor
 
     def _send_tensor_batch_notification(
         self,
@@ -1430,6 +1426,13 @@ if __name__ == "__main__":
         default=str(DEFAULT_CONFIG_DIR / "prefetch_models.yaml"),
         help="Path to prefetch models YAML config file",
     )
+    parser.add_argument(
+        "--transfer-backend",
+        choices=["auto", "nvshmem", "host"],
+        default="auto",
+    )
+    parser.add_argument("--host-transfer-dir", default="/dev/shm/diflow")
+    parser.add_argument("--transfer-session-id")
     args = parser.parse_args()
 
     base_port = args.base_port
@@ -1440,6 +1443,10 @@ if __name__ == "__main__":
     local_rank = local_comm.Get_rank()
     local_size = local_comm.Get_size()
     hostname = MPI.Get_processor_name()
+    transfer_session_id = args.transfer_session_id
+    if transfer_session_id is None:
+        generated_session_id = uuid.uuid4().hex if global_rank == 0 else None
+        transfer_session_id = MPI.COMM_WORLD.bcast(generated_session_id, root=0)
     print(
         f"Worker {global_rank}/{global_size} (local rank {local_rank}/{local_size}) starting on {hostname}..."
     )
@@ -1450,6 +1457,10 @@ if __name__ == "__main__":
         base_port=base_port,
         hostname=hostname,
         prefetch_models_config=args.prefetch_models_config,
+        world_size=global_size,
+        transfer_backend=args.transfer_backend,
+        host_transfer_dir=args.host_transfer_dir,
+        transfer_session_id=transfer_session_id,
     )
     print(f"Worker {global_rank} initialized")
     asyncio.run(worker.run())

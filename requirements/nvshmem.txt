@@ -1,0 +1,2 @@
+# Optional high-performance multi-GPU and multi-node transfer backend.
+nvidia-nvshmem-cu12==3.7.1; sys_platform == "linux"

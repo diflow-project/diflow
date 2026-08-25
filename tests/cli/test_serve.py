@@ -12,6 +12,7 @@ from diflow.cli.serve import (
     build_worker_command,
     read_worker_hostnames,
     resolve_worker_layout,
+    validate_transfer_layout,
 )
 
 
@@ -43,6 +44,9 @@ def test_worker_command_uses_module_entrypoint_and_configs():
         hostfile=None,
         base_port=14000,
         prefetch_models_config="prefetch.yaml",
+        transfer_backend="host",
+        host_transfer_dir="/dev/shm/diflow",
+        transfer_session_id="session-id",
     )
 
     assert build_worker_command(args, 2) == [
@@ -56,7 +60,22 @@ def test_worker_command_uses_module_entrypoint_and_configs():
         "14000",
         "--prefetch-models-config",
         "prefetch.yaml",
+        "--transfer-backend",
+        "host",
+        "--host-transfer-dir",
+        "/dev/shm/diflow",
+        "--transfer-session-id",
+        "session-id",
     ]
+
+
+def test_host_transfer_rejects_hostfile():
+    with pytest.raises(ValueError, match="single-node"):
+        validate_transfer_layout("host", "hosts")
+
+
+def test_nvshmem_transfer_allows_hostfile():
+    validate_transfer_layout("nvshmem", "hosts")
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="requires /proc")
