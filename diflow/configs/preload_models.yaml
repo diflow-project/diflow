@@ -1,0 +1,2 @@
+# Models to load on every worker before serving requests.
+preload_models: []

@@ -1,0 +1,2 @@
+# Models to prefetch into CPU memory on each worker.
+prefetch_models: []

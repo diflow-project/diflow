@@ -1,0 +1,6 @@
+# Model integrations used by the built-in workflows.
+accelerate>=1.4,<2
+huggingface-hub>=0.35,<1
+opencv-python>=4.11,<5
+peft>=0.17,<0.18
+safetensors>=0.5,<1

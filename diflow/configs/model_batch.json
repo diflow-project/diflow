@@ -1,0 +1,34 @@
+{
+    "CLIP_L": {
+        "latency_mode": 4,
+        "throughput_mode": 8
+    },
+    "CLIP_G": {
+        "latency_mode": 2,
+        "throughput_mode": 4
+    },
+    "T5": {
+        "latency_mode": 1,
+        "throughput_mode": 2
+    },
+    "Flux1Dev": {
+        "latency_mode": 1,
+        "throughput_mode": 1
+    },
+    "Flux1DevControlNetCanny": {
+        "latency_mode": 1,
+        "throughput_mode": 1
+    },
+    "Flux1DevControlNetDepth": {
+        "latency_mode": 1,
+        "throughput_mode": 1
+    },
+    "CLIP_Flux": {
+        "latency_mode": 8,
+        "throughput_mode": 16
+    },
+    "T5_Flux": {
+        "latency_mode": 1,
+        "throughput_mode": 2
+    }
+}
