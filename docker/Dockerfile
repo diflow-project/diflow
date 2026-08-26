@@ -57,7 +57,8 @@ COPY . .
 
 # Source archives do not contain initialized submodules. Fetch the pinned public
 # commit over HTTPS when necessary.
-RUN if [ ! -f submodules/diffusers/setup.py ]; then \
+RUN set -eux; \
+    if [ ! -f submodules/diffusers/setup.py ]; then \
         rm -rf submodules/diffusers \
         && mkdir -p submodules/diffusers \
         && git -C submodules/diffusers init \
@@ -67,11 +68,17 @@ RUN if [ ! -f submodules/diffusers/setup.py ]; then \
             --depth 1 origin "${DIFFUSERS_COMMIT}" \
         && git -C submodules/diffusers checkout --detach FETCH_HEAD \
         && rm -rf submodules/diffusers/.git; \
-    fi \
-    && python -m pip install -e submodules/diffusers \
-    && DIFLOW_REQUIRE_NVSHMEM=1 TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
-        python -m pip install . --no-build-isolation \
-    && python -c "import diflow; import diflow.backend.scheduler._scheduling_core; import diflow.backend.data_engine._data_engine"
+    fi
+
+RUN set -eux; \
+    python -m pip install -e submodules/diffusers
+
+RUN set -eux; \
+    DIFLOW_REQUIRE_NVSHMEM=1 TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
+        python -m pip install -e . --no-build-isolation
+
+RUN set -eux; \
+    python -c "import diflow; import diflow.backend.scheduler._scheduling_core; import diflow.backend.data_engine._data_engine"
 
 RUN useradd --create-home --uid 10001 --shell /bin/bash diflow \
     && mkdir -p /models /home/diflow/.cache/diflow \
