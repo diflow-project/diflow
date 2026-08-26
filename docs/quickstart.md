@@ -140,8 +140,20 @@ diflow serve \
 ```
 
 The service ID is the workflow name, `my_flux_workflow`. Serving uses one local
-worker by default. Use `--num-workers N` for multiple local workers or
-`--hostfile PATH` for MPI workers across hosts.
+worker by default. Use `--num-workers N` for multiple local workers. If the
+NVSHMEM extension is unavailable, DiFlow automatically transfers intermediate
+tensors through shared host memory. The choice can be made explicit:
+
+```bash
+diflow serve \
+  --workflow ./my_flux_workflow.py \
+  --model-path /path/to/FLUX.1-schnell \
+  --num-workers 2 \
+  --transfer-backend host
+```
+
+The host backend is single-node only and uses `/dev/shm/diflow`. Multi-node
+workers configured with `--hostfile PATH` require `--transfer-backend nvshmem`.
 
 To add the workflow to an already running DiFlow server, register it directly:
 

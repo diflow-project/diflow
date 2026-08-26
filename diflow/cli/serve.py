@@ -4,16 +4,19 @@ import argparse
 import importlib.resources
 import os
 import re
+import shutil
 import signal
 import subprocess
 import sys
 import threading
 import time
+import uuid
 from dataclasses import replace
 from pathlib import Path
 from typing import Any, Callable, List, Optional, Sequence, Tuple
 
 from benchmark_ops.shapes import parse_batch_sizes, parse_resolutions
+from diflow.backend.data_engine.engine import resolve_transfer_backend
 from diflow.cli.auto_benchmark import (
     DEFAULT_AUTO_BENCHMARK_CACHE_DIR,
     run_auto_benchmark,
@@ -31,6 +34,9 @@ from diflow.profiling.runtime_profile import RuntimeProfile
 
 def default_config_path(filename: str) -> str:
     return str(importlib.resources.files("diflow").joinpath("configs", filename))
+
+
+DEFAULT_HOST_TRANSFER_DIR = "/dev/shm/diflow"
 
 
 def _add_common_arguments(parser: argparse.ArgumentParser) -> None:
@@ -51,6 +57,17 @@ def _add_common_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--hostfile",
         help="MPI hostfile with one host per worker. Omit for local serving.",
+    )
+    parser.add_argument(
+        "--transfer-backend",
+        choices=["auto", "nvshmem", "host"],
+        default="auto",
+        help="Intermediate-tensor transfer backend. Auto prefers NVSHMEM when available.",
+    )
+    parser.add_argument(
+        "--host-transfer-dir",
+        default=DEFAULT_HOST_TRANSFER_DIR,
+        help="Shared-memory directory used by the single-node host backend.",
     )
     parser.add_argument(
         "--scheduling-policy",
@@ -208,6 +225,14 @@ def resolve_worker_layout(
     return ["localhost"] * resolved_count, resolved_count
 
 
+def validate_transfer_layout(backend: str, hostfile: Optional[str]) -> None:
+    if backend == "host" and hostfile:
+        raise ValueError(
+            "The host transfer backend supports only local single-node workers; "
+            "remove --hostfile or use --transfer-backend nvshmem"
+        )
+
+
 def build_worker_command(args: argparse.Namespace, num_workers: int) -> List[str]:
     command = ["mpirun", "-n", str(num_workers)]
     if args.hostfile:
@@ -221,6 +246,12 @@ def build_worker_command(args: argparse.Namespace, num_workers: int) -> List[str
             str(args.base_port),
             "--prefetch-models-config",
             args.prefetch_models_config,
+            "--transfer-backend",
+            args.transfer_backend,
+            "--host-transfer-dir",
+            args.host_transfer_dir,
+            "--transfer-session-id",
+            args.transfer_session_id,
         ]
     )
     return command
@@ -366,6 +397,8 @@ def _validate_common_args(args: argparse.Namespace) -> None:
         raise ValueError("--startup-timeout must be greater than 0")
     if args.no_auto_benchmark and not args.runtime_profile:
         raise ValueError("--no-auto-benchmark requires --runtime-profile")
+    if not args.host_transfer_dir:
+        raise ValueError("--host-transfer-dir cannot be empty")
 
     for option in (
         "preload_models_config",
@@ -401,6 +434,10 @@ def run(
     worker_hostnames, num_workers = resolve_worker_layout(
         args.hostfile, args.num_workers
     )
+    args.transfer_backend = resolve_transfer_backend(args.transfer_backend)
+    validate_transfer_layout(args.transfer_backend, args.hostfile)
+    args.host_transfer_dir = str(Path(args.host_transfer_dir).expanduser().resolve())
+    args.transfer_session_id = uuid.uuid4().hex
     try:
         factory_kwargs = workflow_kwargs(args, destinations)
         workflow = loaded.factory(**factory_kwargs)
@@ -486,6 +523,9 @@ def run(
             pass
     finally:
         worker.stop()
+        if args.transfer_backend == "host":
+            session_dir = Path(args.host_transfer_dir) / args.transfer_session_id
+            shutil.rmtree(session_dir, ignore_errors=True)
     if not server.started or worker.unexpected_returncode is not None:
         return 1
     return 0

@@ -3,7 +3,6 @@ aiohttp>=3.14.3,<4
 fastapi>=0.141.1,<0.142
 mpi4py>=4.1,<5
 numpy>=2.2,<3
-nvidia-nvshmem-cu12==3.7.1; sys_platform == "linux"
 overrides>=7.7,<8
 pillow>=12.3,<13
 protobuf>=5.29,<6

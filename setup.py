@@ -1,11 +1,12 @@
 """Native extension build for DiFlow.
 
-Source and editable installs must use the active Torch/CUDA environment:
+Source and editable installs must use the active Torch environment:
 
     python -m pip install . --no-build-isolation
 
-The metadata and sdist paths remain CPU-safe. A wheel or editable install never
-silently falls back to a pure-Python distribution.
+The scheduling core is always built for an installable distribution. The
+NVSHMEM data engine is included only when its optional headers and libraries
+are available; the pure-Python host-memory backend remains usable otherwise.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ import setuptools
 ROOT = Path(__file__).resolve().parent
 SKIP_NATIVE = os.getenv("DIFLOW_SKIP_NATIVE", "0") == "1"
 SKIP_DATA_ENGINE = os.getenv("DIFLOW_SKIP_DATA_ENGINE", "0") == "1"
+REQUIRE_NVSHMEM = os.getenv("DIFLOW_REQUIRE_NVSHMEM", "0") == "1"
 NATIVE_BUILD_COMMANDS = {
     "bdist_wheel",
     "build_ext",
@@ -86,6 +88,119 @@ def _first_existing_file(
     )
 
 
+def _nvshmem_extension(CUDAExtension):
+    try:
+        nvshmem_dir = _first_valid_directory(
+            "NVSHMEM_DIR",
+            (
+                _nvshmem_package_directory(),
+                _site_nvshmem_directory(),
+                Path("/usr/local/nvshmem"),
+            ),
+            ("include/nvshmem.h", "lib"),
+        )
+        mpi_dir = _first_valid_directory(
+            "MPI_DIR",
+            (
+                Path("/usr/lib/x86_64-linux-gnu/openmpi"),
+                Path("/usr/local/mpi"),
+            ),
+            ("include/mpi.h", "lib"),
+        )
+        nvshmem_lib_dir = nvshmem_dir / "lib"
+        nvshmem_host_library = _first_existing_file(
+            nvshmem_lib_dir,
+            ("libnvshmem_host.so", "libnvshmem_host.so.3"),
+            "NVSHMEM host library",
+        )
+        nvshmem_device_library = _first_existing_file(
+            nvshmem_lib_dir,
+            ("libnvshmem_device.a",),
+            "NVSHMEM device library",
+        )
+        nvshmem_bootstrap_library = _first_existing_file(
+            nvshmem_lib_dir,
+            ("nvshmem_bootstrap_mpi.so", "nvshmem_bootstrap_mpi.so.3"),
+            "NVSHMEM MPI bootstrap library",
+        )
+    except RuntimeError as error:
+        if REQUIRE_NVSHMEM:
+            raise
+        print(
+            "NVSHMEM data engine will not be built; the host-memory transfer "
+            f"backend remains available. Reason: {error}"
+        )
+        return None
+
+    print(f"NVSHMEM directory: {nvshmem_dir}")
+    print(f"MPI directory: {mpi_dir}")
+    nvshmem_rpaths = ["-Wl,-rpath,$ORIGIN/../../../nvidia/nvshmem/lib"]
+    if any(arg in {"build_ext", "develop", "editable_wheel"} for arg in sys.argv):
+        nvshmem_rpaths.append(f"-Wl,-rpath,{nvshmem_lib_dir}")
+    configured_rpath = os.getenv("DIFLOW_NVSHMEM_RPATH")
+    if configured_rpath:
+        nvshmem_rpaths.append(f"-Wl,-rpath,{configured_rpath}")
+
+    os.environ.setdefault("TORCH_CUDA_ARCH_LIST", "8.0;8.9;9.0+PTX")
+    cxx_flags = [
+        "-O3",
+        "-DOMPI_SKIP_MPICXX=1",
+        "-Wno-deprecated-declarations",
+        "-Wno-unused-variable",
+        "-Wno-sign-compare",
+        "-Wno-reorder",
+        "-Wno-attributes",
+    ]
+    nvcc_flags = [
+        "-O3",
+        "-DOMPI_SKIP_MPICXX=1",
+        "-Xcompiler",
+        "-O3",
+        "-rdc=true",
+        "--ptxas-options=--register-usage-level=10",
+    ]
+    include_dirs = [
+        str(ROOT / "csrc"),
+        str(nvshmem_dir / "include"),
+        str(mpi_dir / "include"),
+    ]
+    sources = [
+        "csrc/data_engine/allocator/buddy_allocator.cpp",
+        "csrc/data_engine/allocator/paged_allocator.cpp",
+        "csrc/data_engine/allocator/small_object_allocator.cpp",
+        "csrc/data_engine/allocator/complicated_allocator.cpp",
+        "csrc/data_engine/engine/backends/nvshmem/nvshmem_backend.cpp",
+    ]
+    nvcc_dlink = [
+        "-dlink",
+        f"-L{nvshmem_lib_dir}",
+        f"-l:{nvshmem_host_library.name}",
+        "-lnvshmem_device",
+        f"-L{mpi_dir / 'lib'}",
+        "-lmpi",
+    ]
+    extra_link_args = [
+        str(nvshmem_host_library),
+        str(nvshmem_device_library),
+        str(nvshmem_bootstrap_library),
+        *nvshmem_rpaths,
+        "-l:libmpi.so",
+        f"-Wl,-rpath,{mpi_dir / 'lib'}",
+    ]
+    return CUDAExtension(
+        name="diflow.backend.data_engine._data_engine",
+        include_dirs=include_dirs,
+        library_dirs=[str(nvshmem_lib_dir), str(mpi_dir / "lib")],
+        sources=sources,
+        extra_compile_args={
+            "cxx": cxx_flags,
+            "nvcc": nvcc_flags,
+            "nvcc_dlink": nvcc_dlink,
+        },
+        extra_link_args=extra_link_args,
+    )
+
+
 ext_modules = []
 cmdclass = {}
 
@@ -93,12 +208,6 @@ if SKIP_NATIVE and "bdist_wheel" in sys.argv:
     raise RuntimeError(
         "DIFLOW_SKIP_NATIVE cannot be used to build a release wheel. "
         "Build on Linux with Torch and the documented native prerequisites."
-    )
-
-if SKIP_DATA_ENGINE and "bdist_wheel" in sys.argv:
-    raise RuntimeError(
-        "DIFLOW_SKIP_DATA_ENGINE cannot be used to build a release wheel. "
-        "It is limited to scheduling-core development builds."
     )
 
 if not SKIP_NATIVE:
@@ -124,110 +233,9 @@ if not SKIP_NATIVE:
                 extra_compile_args=["-O3", "-std=c++17"],
             )
         )
-
         if not SKIP_DATA_ENGINE:
-            nvshmem_dir = _first_valid_directory(
-                "NVSHMEM_DIR",
-                (
-                    _nvshmem_package_directory(),
-                    _site_nvshmem_directory(),
-                    Path("/usr/local/nvshmem"),
-                ),
-                ("include/nvshmem.h", "lib"),
-            )
-            mpi_dir = _first_valid_directory(
-                "MPI_DIR",
-                (
-                    Path("/usr/lib/x86_64-linux-gnu/openmpi"),
-                    Path("/usr/local/mpi"),
-                ),
-                ("include/mpi.h", "lib"),
-            )
-            print(f"NVSHMEM directory: {nvshmem_dir}")
-            print(f"MPI directory: {mpi_dir}")
-            nvshmem_lib_dir = nvshmem_dir / "lib"
-            nvshmem_host_library = _first_existing_file(
-                nvshmem_lib_dir,
-                ("libnvshmem_host.so", "libnvshmem_host.so.3"),
-                "NVSHMEM host library",
-            )
-            nvshmem_device_library = _first_existing_file(
-                nvshmem_lib_dir, ("libnvshmem_device.a",), "NVSHMEM device library"
-            )
-            nvshmem_bootstrap_library = _first_existing_file(
-                nvshmem_lib_dir,
-                ("nvshmem_bootstrap_mpi.so", "nvshmem_bootstrap_mpi.so.3"),
-                "NVSHMEM MPI bootstrap library",
-            )
-            nvshmem_rpaths = ["-Wl,-rpath,$ORIGIN/../../../nvidia/nvshmem/lib"]
-            if any(
-                arg in {"build_ext", "develop", "editable_wheel"} for arg in sys.argv
-            ):
-                nvshmem_rpaths.append(f"-Wl,-rpath,{nvshmem_lib_dir}")
-            configured_rpath = os.getenv("DIFLOW_NVSHMEM_RPATH")
-            if configured_rpath:
-                nvshmem_rpaths.append(f"-Wl,-rpath,{configured_rpath}")
-
-            os.environ.setdefault("TORCH_CUDA_ARCH_LIST", "8.0;8.9;9.0+PTX")
-            cxx_flags = [
-                "-O3",
-                "-DOMPI_SKIP_MPICXX=1",
-                "-Wno-deprecated-declarations",
-                "-Wno-unused-variable",
-                "-Wno-sign-compare",
-                "-Wno-reorder",
-                "-Wno-attributes",
-            ]
-            nvcc_flags = [
-                "-O3",
-                "-DOMPI_SKIP_MPICXX=1",
-                "-Xcompiler",
-                "-O3",
-                "-rdc=true",
-                "--ptxas-options=--register-usage-level=10",
-            ]
-            include_dirs = [
-                str(ROOT / "csrc"),
-                str(nvshmem_dir / "include"),
-                str(mpi_dir / "include"),
-            ]
-            sources = [
-                "csrc/data_engine/allocator/buddy_allocator.cpp",
-                "csrc/data_engine/allocator/paged_allocator.cpp",
-                "csrc/data_engine/allocator/small_object_allocator.cpp",
-                "csrc/data_engine/allocator/complicated_allocator.cpp",
-                "csrc/data_engine/engine/backends/nvshmem/nvshmem_backend.cpp",
-            ]
-            library_dirs = [str(nvshmem_dir / "lib"), str(mpi_dir / "lib")]
-            nvcc_dlink = [
-                "-dlink",
-                f"-L{nvshmem_lib_dir}",
-                f"-l:{nvshmem_host_library.name}",
-                "-lnvshmem_device",
-                f"-L{mpi_dir / 'lib'}",
-                "-lmpi",
-            ]
-            extra_link_args = [
-                str(nvshmem_host_library),
-                str(nvshmem_device_library),
-                str(nvshmem_bootstrap_library),
-                *nvshmem_rpaths,
-                "-l:libmpi.so",
-                f"-Wl,-rpath,{mpi_dir / 'lib'}",
-            ]
-            ext_modules.append(
-                CUDAExtension(
-                    name="diflow.backend.data_engine._data_engine",
-                    include_dirs=include_dirs,
-                    library_dirs=library_dirs,
-                    sources=sources,
-                    extra_compile_args={
-                        "cxx": cxx_flags,
-                        "nvcc": nvcc_flags,
-                        "nvcc_dlink": nvcc_dlink,
-                    },
-                    extra_link_args=extra_link_args,
-                )
-            )
+            data_engine_extension = _nvshmem_extension(CUDAExtension)
+            if data_engine_extension is not None:
+                ext_modules.append(data_engine_extension)
 
 setuptools.setup(ext_modules=ext_modules, cmdclass=cmdclass)
