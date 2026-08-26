@@ -11,7 +11,7 @@
 
 FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
-ARG DIFFUSERS_COMMIT=1c3482238417884e430bbb23a44a508b9d1461c2
+ARG DIFFUSERS_COMMIT=976985d54fd423f56334bb7ed32eeec759694fe8
 ARG TORCH_CUDA_ARCH_LIST="8.0;8.9;9.0+PTX"
 
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -67,7 +67,7 @@ RUN if [ ! -f submodules/diffusers/setup.py ]; then \
         && git -C submodules/diffusers checkout --detach FETCH_HEAD \
         && rm -rf submodules/diffusers/.git; \
     fi \
-    && python -m pip install -e submodules/diffusers \
+    && python -m pip install -e submodules/diffusers -c requirements/constraints-cu124.txt \
     && TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
         python -m pip install . --no-build-isolation \
     && python -c "import diflow; import diflow.backend.scheduler._scheduling_core; import diflow.backend.data_engine._data_engine"

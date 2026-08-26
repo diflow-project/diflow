@@ -9,12 +9,15 @@ platform-specific wheel builds.
 | Component | Validated configuration |
 |---|---|
 | Operating system | Ubuntu 22.04 |
-| Python | 3.10; CPU tests also cover 3.11 |
+| Python | 3.10 |
 | CUDA toolkit | 12.4 |
 | GPU | NVIDIA H20 |
 | Open MPI | 4.1 |
 | NVSHMEM | 3.7.1 |
-| Torch | 2.5.1 |
+| Torch | 2.6.0 (CUDA 12.4) |
+| Transformers | 5.15.1 |
+| Hugging Face Hub | 1.23.0 |
+| Diffusers | 0.40.0.dev0 + DiFlow patches (pinned submodule) |
 
 The default native build includes `sm_80`, `sm_89`, and `sm_90` plus PTX,
 covering A100, RTX 4090, and Hopper-class compilation targets. These targets are
@@ -88,7 +91,7 @@ python -m pip install \
   -c requirements/constraints-cu124.txt
 
 python -m pip install --no-cache-dir --force-reinstall --no-binary=mpi4py mpi4py==4.1.2
-python -m pip install -e submodules/diffusers
+python -m pip install -e submodules/diffusers -c requirements/constraints-cu124.txt
 ```
 
 DiFlow detects the installed NVSHMEM wheel and standard Ubuntu Open MPI path.
@@ -110,12 +113,20 @@ python -m pip install -e . --no-build-isolation
 Use `8.0` for A100, `8.9` for RTX 4090, or
 `8.0;8.9;9.0+PTX` for a release wheel.
 
+When upgrading an existing checkout, run `git submodule update --init --recursive`
+and follow the dependency and build steps above in a fresh environment. The
+updated diffusers fork needs Hugging Face Hub 1.x and the matching Transformers
+5.x stack; the previous Torch 2.5.1 / Transformers 4.56.2 constraints are not
+compatible with this release. Rebuild DiFlow's native extensions after changing
+Torch instead of reusing extensions compiled for the old environment.
+
 Verify the installation:
 
 ```bash
 python -c "import diflow"
 python -c "import diflow.backend.scheduler._scheduling_core"
 python -c "import diflow.backend.data_engine._data_engine"
+python -m pip check
 diflow --help
 ```
 

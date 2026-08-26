@@ -1,4 +1,5 @@
 [submodule "submodules/diffusers"]
 	path = submodules/diffusers
 	url = https://github.com/diflow-project/diffusers.git
+	branch = diflow-dev
 	shallow = true
