@@ -1,0 +1,105 @@
+# python workflow_hub/zimage/register_txt2img_workflow.py
+import argparse
+
+from diflow.interface import (
+    BenchmarkSpec,
+    Workflow,
+    cond,
+    denoise_loop,
+    register_workflow,
+)
+from diflow.operators import (
+    Config,
+    Qwen3_ZImage,
+    ZImage,
+    ZImageFlowMatchEulerDiscreteScheduler,
+    ZImageLatentsGenerator,
+    ZImageVAE,
+)
+from diflow.operators.utils import default_model_path
+
+
+def create_workflow(model_path: str) -> Workflow:
+    workflow = Workflow(
+        name="zimage_txt2img_workflow",
+        benchmark=BenchmarkSpec(
+            inputs={
+                "prompt": "A cat holding a sign that says hello world",
+                "negative_prompt": "",
+                "cfg_guidance_scale": 5.0,
+                "seed": 0,
+                "num_inference_steps": 2,
+            },
+            resolutions=((1024, 1024),),
+            batch_sizes=(1,),
+            profile_steps=2,
+        ),
+    )
+
+    config = Config(model_path=model_path)
+    latents_generator = ZImageLatentsGenerator()
+    text_encoder = Qwen3_ZImage(config)
+    scheduler = ZImageFlowMatchEulerDiscreteScheduler(config)
+    transformer = ZImage(config)
+    vae = ZImageVAE(config)
+
+    seed = workflow.add_input("seed", int)
+    prompt = workflow.add_input("prompt", str)
+    negative_prompt = workflow.add_input("negative_prompt", str)
+    cfg_guidance_scale = workflow.add_input("cfg_guidance_scale", float)
+    height = workflow.add_input("height", int)
+    width = workflow.add_input("width", int)
+    num_inference_steps = workflow.add_input("num_inference_steps", int)
+
+    latents = latents_generator(height=height, width=width, seed=seed)
+    prompt_embeds, attention_mask = text_encoder(prompt=prompt)
+    loop = dict(
+        model=transformer,
+        scheduler=scheduler,
+        latents=latents,
+        num_inference_steps=num_inference_steps,
+        prompt_embeds=prompt_embeds,
+        encoder_attention_mask=attention_mask,
+        height=height,
+        width=width,
+    )
+
+    def with_cfg():
+        # Keep negative-prompt encoding inside the request-time branch so a
+        # no-CFG request does not spend a second Qwen3 pass.
+        negative_embeds, negative_mask = text_encoder(prompt=negative_prompt)
+        return {
+            "latents": denoise_loop(
+                negative_prompt_embeds=negative_embeds,
+                negative_encoder_attention_mask=negative_mask,
+                cfg_guidance_scale=cfg_guidance_scale,
+                # ZImagePipeline enables its non-standard CFG for every positive
+                # scale, rather than only for scales greater than one.
+                cfg_threshold=0.0,
+                **loop,
+            )
+        }
+
+    def without_cfg():
+        return {"latents": denoise_loop(**loop)}
+
+    denoised_latents = cond(cfg_guidance_scale > 0.0, with_cfg, without_cfg)["latents"]
+    output_img = vae(latents=denoised_latents, mode="decode_latents")
+    workflow.add_output(output_img, name="output_img")
+    return workflow
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    model_path_default = default_model_path("Z-Image")
+    parser.add_argument("--server-url", default="http://localhost:8000")
+    parser.add_argument(
+        "--model-path",
+        default=model_path_default,
+        required=model_path_default is None,
+    )
+    args = parser.parse_args()
+    service_id = register_workflow(
+        create_workflow(args.model_path), server_url=args.server_url
+    )
+    print(f"Registered workflow with service ID: {service_id}")

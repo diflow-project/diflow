@@ -37,6 +37,7 @@ class DenoiseContext:
     latents: NodeIO
     timestep: NodeIO
     prompt_embeds: Optional[NodeIO] = None
+    encoder_attention_mask: Optional[NodeIO] = None
     pooled_prompt_embeds: Optional[NodeIO] = None
     # Flux's distilled guidance embedding. Unrelated to classifier-free guidance.
     guidance: Optional[NodeIO] = None
@@ -47,6 +48,7 @@ class DenoiseContext:
         self,
         prompt_embeds: Optional[NodeIO],
         pooled_prompt_embeds: Optional[NodeIO],
+        encoder_attention_mask: Optional[NodeIO] = None,
     ) -> "DenoiseContext":
         """The same step under different text conditioning.
 
@@ -57,6 +59,7 @@ class DenoiseContext:
             self,
             prompt_embeds=prompt_embeds,
             pooled_prompt_embeds=pooled_prompt_embeds,
+            encoder_attention_mask=encoder_attention_mask,
         )
 
 
