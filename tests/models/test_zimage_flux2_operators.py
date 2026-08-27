@@ -133,32 +133,6 @@ def test_zimage_scheduler_matches_serverless_sigma_min_zero_schedule():
     assert torch.equal(result["timesteps"], torch.arange(4))
 
 
-def test_zimage_batch_cfg_matches_reference_positive_then_negative_order():
-    class FakeTransformer:
-        dtype = torch.bfloat16
-
-        def __call__(self, latents, timestep, cap_feats, return_dict):
-            assert len(latents) == 2
-            assert timestep.tolist() == pytest.approx([0.5, 0.5])
-            assert [row.shape[0] for row in cap_feats] == [2, 1]
-            assert return_dict is False
-            return ([torch.ones_like(latents[0]), torch.full_like(latents[1], 2)],)
-
-    result = ZImage().execute(
-        {"transformer": FakeTransformer()},
-        "cpu",
-        mode="batch_cfg",
-        latents=torch.zeros(1, 16, 2, 2),
-        timestep=torch.tensor(500.0),
-        prompt_embeds=torch.zeros(1, 3, 4),
-        negative_prompt_embeds=torch.zeros(1, 3, 4),
-        encoder_attention_mask=torch.tensor([[1, 1, 0]]),
-        negative_encoder_attention_mask=torch.tensor([[1, 0, 0]]),
-    )
-    assert torch.equal(result["noise_pred_text"], torch.ones(1, 16, 2, 2))
-    assert torch.equal(result["noise_pred_uncond"], torch.full((1, 16, 2, 2), 2.0))
-
-
 def test_new_operators_round_trip_through_registration_serialization():
     config = Config(model_path="/dummy/model")
     operators = [

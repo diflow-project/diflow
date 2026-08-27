@@ -16,31 +16,6 @@ class ZImage(BaseDiffusionModel):
     def setup_io(self):
         super().setup_io()
         self.add_input("encoder_attention_mask", torch.Tensor)
-        self.add_execution_mode(
-            "default",
-            inputs={
-                "latents": torch.Tensor,
-                "timestep": torch.Tensor,
-                "prompt_embeds": torch.Tensor,
-                "encoder_attention_mask": torch.Tensor,
-            },
-            outputs={"noise_pred": torch.Tensor},
-        )
-        self.add_execution_mode(
-            "batch_cfg",
-            inputs={
-                "latents": torch.Tensor,
-                "timestep": torch.Tensor,
-                "prompt_embeds": torch.Tensor,
-                "negative_prompt_embeds": torch.Tensor,
-                "encoder_attention_mask": torch.Tensor,
-                "negative_encoder_attention_mask": torch.Tensor,
-            },
-            outputs={
-                "noise_pred_text": torch.Tensor,
-                "noise_pred_uncond": torch.Tensor,
-            },
-        )
 
     @property
     def id(self) -> str:
@@ -65,7 +40,6 @@ class ZImage(BaseDiffusionModel):
         self,
         model_components: Dict[str, Any],
         device: Union[str, torch.device],
-        mode: str = "default",
         **kwargs,
     ) -> Dict[str, Any]:
         transformer = model_components["transformer"]
@@ -73,47 +47,6 @@ class ZImage(BaseDiffusionModel):
         prompt_embeds = kwargs["prompt_embeds"]
         attention_mask = kwargs.get("encoder_attention_mask")
         batch_size = latents.shape[0]
-
-        if mode == "batch_cfg":
-            negative_embeds = kwargs["negative_prompt_embeds"]
-            negative_mask = kwargs.get("negative_encoder_attention_mask")
-
-            # The reference pipeline concatenates positive then negative
-            # conditioning into one batch=2 transformer invocation. Keeping that
-            # batching is required for an apple-to-apple numerical comparison.
-            latent_input = latents.to(transformer.dtype).repeat(2, 1, 1, 1)
-            latent_list = list(latent_input.unsqueeze(2).unbind(dim=0))
-
-            def variable_length(embeds, mask):
-                if mask is None:
-                    return list(embeds.unbind(dim=0))
-                return [
-                    embeds[index][mask[index].bool()] for index in range(batch_size)
-                ]
-
-            cap_feats = variable_length(prompt_embeds, attention_mask)
-            cap_feats += variable_length(negative_embeds, negative_mask)
-            timestep = kwargs["timestep"].expand(batch_size)
-            timestep = ((1000 - timestep) / 1000).repeat(2)
-            outputs = transformer(
-                latent_list,
-                timestep,
-                cap_feats,
-                return_dict=False,
-            )[0]
-            positive = torch.stack(
-                [output.float() for output in outputs[:batch_size]]
-            ).squeeze(2)
-            negative = torch.stack(
-                [output.float() for output in outputs[batch_size:]]
-            ).squeeze(2)
-            return {
-                "noise_pred_text": positive,
-                "noise_pred_uncond": negative,
-            }
-
-        if mode != "default":
-            raise ValueError(f"Invalid execution mode: {mode}")
 
         # The reference transformer consumes one (C, 1, H, W) tensor and one
         # variable-length text tensor per sample rather than dense batched tensors.

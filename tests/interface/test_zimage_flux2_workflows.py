@@ -45,11 +45,10 @@ def test_zimage_cfg_threshold_and_negative_encoder_are_request_conditional():
     assert sum(node.op.id == "Qwen3_ZImage" for node in without_cfg.workflow_nodes) == 1
     assert sum(node.op.id == "ZImage" for node in without_cfg.workflow_nodes) == 2
     assert sum(node.op.id == "Qwen3_ZImage" for node in with_cfg.workflow_nodes) == 2
-    assert sum(node.op.id == "ZImage" for node in with_cfg.workflow_nodes) == 2
+    assert sum(node.op.id == "ZImage" for node in with_cfg.workflow_nodes) == 4
 
     model_nodes = [node for node in with_cfg.workflow_nodes if node.op.id == "ZImage"]
     assert all("encoder_attention_mask" in node.get_inputs() for node in model_nodes)
-    assert all(node.mode == "batch_cfg" for node in model_nodes)
     assert (
         sum(
             node.mode == "step_classifier_free_guidance"

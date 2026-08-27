@@ -3,7 +3,6 @@ import argparse
 
 from diflow.interface import (
     BenchmarkSpec,
-    DenoiseContext,
     Workflow,
     cond,
     denoise_loop,
@@ -72,29 +71,14 @@ def create_workflow(model_path: str) -> Workflow:
         # Keep negative-prompt encoding inside the request-time branch so a
         # no-CFG request does not spend a second Qwen3 pass.
         negative_embeds, negative_mask = text_encoder(prompt=negative_prompt)
-
-        def cfg_step(context: DenoiseContext):
-            noise_pred_text, noise_pred_uncond = transformer(
-                latents=context.latents,
-                timestep=context.timestep,
-                prompt_embeds=prompt_embeds,
-                negative_prompt_embeds=negative_embeds,
-                encoder_attention_mask=attention_mask,
-                negative_encoder_attention_mask=negative_mask,
-                mode="batch_cfg",
-            )
-            return scheduler(
-                latents=context.latents,
-                timestep=context.timestep,
-                noise_pred_uncond=noise_pred_uncond,
-                noise_pred_text=noise_pred_text,
-                guidance_scale=cfg_guidance_scale,
-                mode="step_classifier_free_guidance",
-            )
-
         return {
             "latents": denoise_loop(
-                step_fn=cfg_step,
+                negative_prompt_embeds=negative_embeds,
+                negative_encoder_attention_mask=negative_mask,
+                cfg_guidance_scale=cfg_guidance_scale,
+                # ZImagePipeline enables its non-standard CFG for every positive
+                # scale, rather than only for scales greater than one.
+                cfg_threshold=0.0,
                 **loop,
             )
         }
