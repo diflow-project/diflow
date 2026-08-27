@@ -20,6 +20,7 @@ from diflow.operators.models.diffusion_models.flux_1_dev import Flux1Dev
 from diflow.operators.models.diffusion_models.flux_1_schnell import Flux1Schnell
 from diflow.operators.models.diffusion_models.flux_2_klein import Flux2Klein
 from diflow.operators.models.diffusion_models.zimage import ZImage
+from diflow.operators.models.diffusion_models.zimage_turbo import ZImageTurbo
 from diflow.operators.models.text_encoders.clip_flux import CLIP_Flux
 from diflow.operators.models.text_encoders.qwen3_flux2_klein import (
     Qwen3_Flux2Klein,
@@ -37,6 +38,7 @@ from diflow.operators.schedulers.flux_flow_match_euler_discrete_scheduler import
 from diflow.operators.schedulers.pndm_scheduler import PNDMScheduler
 from diflow.operators.schedulers.zimage_flow_match_euler_discrete_scheduler import (
     ZImageFlowMatchEulerDiscreteScheduler,
+    ZImageTurboFlowMatchEulerDiscreteScheduler,
 )
 from diflow.operators.utils import Config
 
@@ -56,6 +58,7 @@ __all__ = [
     "Flux1Schnell",
     "Flux2Klein",
     "ZImage",
+    "ZImageTurbo",
     "Flux1VAE",
     "Flux2VAE",
     "ZImageVAE",
@@ -68,4 +71,5 @@ __all__ = [
     "FluxSchnellFlowMatchEulerDiscreteScheduler",
     "Flux2FlowMatchEulerDiscreteScheduler",
     "ZImageFlowMatchEulerDiscreteScheduler",
+    "ZImageTurboFlowMatchEulerDiscreteScheduler",
 ]

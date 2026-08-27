@@ -12,6 +12,8 @@ from diflow.operators import (
     ZImage,
     ZImageFlowMatchEulerDiscreteScheduler,
     ZImageLatentsGenerator,
+    ZImageTurbo,
+    ZImageTurboFlowMatchEulerDiscreteScheduler,
     ZImageVAE,
 )
 from diflow.operators.base import Operator
@@ -104,7 +106,7 @@ def test_zimage_scheduler_uses_positive_anchored_cfg_and_negates_prediction():
     assert torch.equal(result["output_latents"], torch.tensor([-14.0]))
 
 
-def test_zimage_scheduler_uses_new_explicit_sigma_schedule_and_begin_index():
+def test_zimage_scheduler_matches_serverless_sigma_min_zero_schedule():
     class FakeScheduler:
         config = {
             "base_image_seq_len": 256,
@@ -113,12 +115,9 @@ def test_zimage_scheduler_uses_new_explicit_sigma_schedule_and_begin_index():
             "max_shift": 1.15,
         }
 
-        def set_timesteps(self, *, sigmas, device, mu):
-            self.received = (sigmas, device, mu)
-            self.timesteps = torch.tensor(sigmas) * 1000
-
-        def set_begin_index(self, index):
-            self.begin_index = index
+        def set_timesteps(self, steps, *, device, mu):
+            self.received = (steps, device, mu)
+            self.timesteps = torch.arange(steps)
 
     fake = FakeScheduler()
     result = ZImageFlowMatchEulerDiscreteScheduler().execute(
@@ -128,11 +127,36 @@ def test_zimage_scheduler_uses_new_explicit_sigma_schedule_and_begin_index():
         num_inference_steps=4,
         latents=torch.zeros(1, 16, 128, 128),
     )
-    expected_sigmas = torch.linspace(1.0, 0.25, 4).tolist()
-    assert fake.received[0] == expected_sigmas
+    assert fake.sigma_min == 0.0
+    assert fake.received[0] == 4
     assert fake.received[1] == "cpu"
-    assert fake.begin_index == 0
-    assert torch.equal(result["timesteps"], torch.tensor(expected_sigmas) * 1000)
+    assert torch.equal(result["timesteps"], torch.arange(4))
+
+
+def test_zimage_batch_cfg_matches_reference_positive_then_negative_order():
+    class FakeTransformer:
+        dtype = torch.bfloat16
+
+        def __call__(self, latents, timestep, cap_feats, return_dict):
+            assert len(latents) == 2
+            assert timestep.tolist() == pytest.approx([0.5, 0.5])
+            assert [row.shape[0] for row in cap_feats] == [2, 1]
+            assert return_dict is False
+            return ([torch.ones_like(latents[0]), torch.full_like(latents[1], 2)],)
+
+    result = ZImage().execute(
+        {"transformer": FakeTransformer()},
+        "cpu",
+        mode="batch_cfg",
+        latents=torch.zeros(1, 16, 2, 2),
+        timestep=torch.tensor(500.0),
+        prompt_embeds=torch.zeros(1, 3, 4),
+        negative_prompt_embeds=torch.zeros(1, 3, 4),
+        encoder_attention_mask=torch.tensor([[1, 1, 0]]),
+        negative_encoder_attention_mask=torch.tensor([[1, 0, 0]]),
+    )
+    assert torch.equal(result["noise_pred_text"], torch.ones(1, 16, 2, 2))
+    assert torch.equal(result["noise_pred_uncond"], torch.full((1, 16, 2, 2), 2.0))
 
 
 def test_new_operators_round_trip_through_registration_serialization():
@@ -143,6 +167,8 @@ def test_new_operators_round_trip_through_registration_serialization():
         ZImage(config),
         ZImageVAE(config),
         ZImageFlowMatchEulerDiscreteScheduler(config),
+        ZImageTurbo(config),
+        ZImageTurboFlowMatchEulerDiscreteScheduler(config),
         Flux2LatentsGenerator(),
         Qwen3_Flux2Klein(config),
         Flux2Klein(config),
@@ -165,3 +191,11 @@ def test_distilled_flux2_scheduler_does_not_advertise_cfg_mode():
         "init",
         "step",
     }
+
+
+def test_zimage_turbo_has_distinct_model_and_scheduler_ids():
+    assert ZImageTurbo().id == "ZImageTurbo"
+    assert (
+        ZImageTurboFlowMatchEulerDiscreteScheduler().id
+        == "ZImageTurboFlowMatchEulerDiscreteScheduler"
+    )

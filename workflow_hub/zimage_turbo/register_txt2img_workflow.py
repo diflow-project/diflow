@@ -1,21 +1,21 @@
-# python workflow_hub/flux2_klein/register_txt2img_workflow.py
+# python workflow_hub/zimage_turbo/register_txt2img_workflow.py
 import argparse
 
 from diflow.interface import BenchmarkSpec, Workflow, denoise_loop, register_workflow
 from diflow.operators import (
     Config,
-    Flux2FlowMatchEulerDiscreteScheduler,
-    Flux2Klein,
-    Flux2LatentsGenerator,
-    Flux2VAE,
-    Qwen3_Flux2Klein,
+    Qwen3_ZImage,
+    ZImageLatentsGenerator,
+    ZImageTurbo,
+    ZImageTurboFlowMatchEulerDiscreteScheduler,
+    ZImageVAE,
 )
 from diflow.operators.utils import default_model_path
 
 
 def create_workflow(model_path: str) -> Workflow:
     workflow = Workflow(
-        name="flux2klein_txt2img_workflow",
+        name="zimage_turbo_txt2img_workflow",
         benchmark=BenchmarkSpec(
             inputs={
                 "prompt": "A cat holding a sign that says hello world",
@@ -30,11 +30,11 @@ def create_workflow(model_path: str) -> Workflow:
 
     # Define model nodes
     config = Config(model_path=model_path)
-    latents_generator = Flux2LatentsGenerator()
-    text_encoder = Qwen3_Flux2Klein(config)
-    scheduler = Flux2FlowMatchEulerDiscreteScheduler(config)
-    transformer = Flux2Klein(config)
-    vae = Flux2VAE(config)
+    latents_generator = ZImageLatentsGenerator()
+    text_encoder = Qwen3_ZImage(config)
+    scheduler = ZImageTurboFlowMatchEulerDiscreteScheduler(config)
+    transformer = ZImageTurbo(config)
+    vae = ZImageVAE(config)
 
     # Define inputs
     seed = workflow.add_input(name="seed", data_type=int)
@@ -45,24 +45,21 @@ def create_workflow(model_path: str) -> Workflow:
 
     # Define connections
     latents = latents_generator(height=height, width=width, seed=seed)
-    prompt_embeds = text_encoder(prompt=prompt)
-    # The shipped Klein checkpoint has is_distilled=true, so its reference
-    # pipeline ignores guidance and performs exactly one transformer call.
+    prompt_embeds, attention_mask = text_encoder(prompt=prompt)
+    # Turbo is distilled for guidance_scale=0: there is no negative encoder pass
+    # or CFG branch, and each requested step performs one transformer call.
     denoised_latents = denoise_loop(
         model=transformer,
         scheduler=scheduler,
         latents=latents,
         num_inference_steps=num_inference_steps,
         prompt_embeds=prompt_embeds,
+        encoder_attention_mask=attention_mask,
         height=height,
         width=width,
     )
-    output_img = vae(
-        latents=denoised_latents,
-        height=height,
-        width=width,
-        mode="decode_latents",
-    )
+    output_img = vae(latents=denoised_latents, mode="decode_latents")
+
     # Define outputs
     workflow.add_output(output_img, name="output_img")
     return workflow
@@ -70,7 +67,7 @@ def create_workflow(model_path: str) -> Workflow:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    model_path_default = default_model_path("Flux.2-klein")
+    model_path_default = default_model_path("Z-Image-Turbo")
     parser.add_argument("--server-url", type=str, default="http://localhost:8000")
     parser.add_argument(
         "--model-path",

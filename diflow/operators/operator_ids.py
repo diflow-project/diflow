@@ -10,6 +10,7 @@ FLUX_1_SCHNELL_ID = "Flux1Schnell"
 FLUX_1_DEV_ID = "Flux1Dev"
 FLUX_2_KLEIN_ID = "Flux2Klein"
 ZIMAGE_ID = "ZImage"
+ZIMAGE_TURBO_ID = "ZImageTurbo"
 
 # Text Encoders
 CLIP_FLUX_ID = "CLIP_Flux"
@@ -37,6 +38,9 @@ FLUX_SCHNELL_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID = (
 )
 FLUX2_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID = "Flux2FlowMatchEulerDiscreteScheduler"
 ZIMAGE_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID = "ZImageFlowMatchEulerDiscreteScheduler"
+ZIMAGE_TURBO_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID = (
+    "ZImageTurboFlowMatchEulerDiscreteScheduler"
+)
 
 # Custom Operators
 FLUX_LATENTS_GENERATOR_ID = "FluxLatentsGenerator"

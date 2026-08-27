@@ -154,6 +154,10 @@ def get_op(op: str, model_path: str | None = None):
         from diflow.operators.models.diffusion_models.zimage import ZImage
 
         return ZImage(Config(model_path=model_path))
+    elif op == "ZImageTurbo":
+        from diflow.operators.models.diffusion_models.zimage_turbo import ZImageTurbo
+
+        return ZImageTurbo(Config(model_path=model_path))
     elif op == "ZImageVAE":
         from diflow.operators.models.autoencoders.zimage_vae import ZImageVAE
 
@@ -164,6 +168,12 @@ def get_op(op: str, model_path: str | None = None):
         )
 
         return ZImageFlowMatchEulerDiscreteScheduler(Config(model_path=model_path))
+    elif op == "ZImageTurboFlowMatchEulerDiscreteScheduler":
+        from diflow.operators.schedulers.zimage_flow_match_euler_discrete_scheduler import (
+            ZImageTurboFlowMatchEulerDiscreteScheduler,
+        )
+
+        return ZImageTurboFlowMatchEulerDiscreteScheduler(Config(model_path=model_path))
     elif op == "Flux2LatentsGenerator":
         from diflow.operators.custom.flux2_latents_generator import (
             Flux2LatentsGenerator,

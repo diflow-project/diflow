@@ -44,12 +44,12 @@ def create_workflow(
 def test_unknown_workflow_lists_builtins():
     with pytest.raises(
         WorkflowLoadError,
-        match="flux-dev, flux-schnell, flux2-klein, zimage",
+        match="flux-dev, flux-schnell, flux2-klein, zimage, zimage-turbo",
     ):
         load_workflow("does-not-exist")
 
 
-@pytest.mark.parametrize("name", ["zimage", "flux2-klein"])
+@pytest.mark.parametrize("name", ["zimage", "zimage-turbo", "flux2-klein"])
 def test_new_builtin_workflows_load(name):
     loaded = load_workflow(name)
     assert loaded.name == name

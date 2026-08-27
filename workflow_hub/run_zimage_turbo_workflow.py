@@ -1,4 +1,4 @@
-# python workflow_hub/run_flux2_klein_workflow.py
+# python workflow_hub/run_zimage_turbo_workflow.py
 import argparse
 import base64
 import io
@@ -9,9 +9,16 @@ from PIL import Image
 
 from diflow.interface import run_inference
 
-SERVICE_ID = "flux2klein_txt2img_workflow"
+SERVICE_ID = "zimage_turbo_txt2img_workflow"
 OUTPUT_DIR = Path(__file__).resolve().parents[1] / "imgs"
-PROMPT = "A cat holding a sign that says hello world"
+PROMPT = (
+    "Young Chinese woman in red Hanfu, intricate embroidery. Impeccable makeup, "
+    "red floral forehead pattern. Elaborate high bun, golden phoenix headdress, "
+    "red flowers, beads. Holds round folding fan with lady, trees, bird. Neon "
+    "lightning-bolt lamp (⚡️), bright yellow glow, above extended left palm. "
+    "Soft-lit outdoor night background, silhouetted tiered pagoda (西安大雁塔), "
+    "blurred colorful distant lights."
+)
 
 
 def decode_image(img_str) -> Image.Image:
@@ -28,9 +35,9 @@ def process_response(response):
     for idx, img_str in enumerate(images):
         img = decode_image(img_str)
         output_path = OUTPUT_DIR / (
-            "flux2_klein_output.png"
+            "zimage_turbo_output.png"
             if len(images) == 1
-            else f"flux2_klein_output_{idx}.png"
+            else f"zimage_turbo_output_{idx}.png"
         )
         print(f"output_img_{idx}.shape: {img.size}")
         img.save(output_path)
@@ -40,7 +47,7 @@ def process_response(response):
 def build_inputs():
     return {
         "prompt": PROMPT,
-        "num_inference_steps": 4,
+        "num_inference_steps": 9,
         "seed": 0,
         "height": 1024,
         "width": 1024,

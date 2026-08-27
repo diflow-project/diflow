@@ -7,6 +7,7 @@ from overrides import override
 from diflow.operators.base import require_pretrained_weights
 from diflow.operators.operator_ids import (
     ZIMAGE_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID,
+    ZIMAGE_TURBO_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID,
 )
 from diflow.operators.schedulers.base_scheduler import BaseScheduler
 
@@ -66,14 +67,11 @@ class ZImageFlowMatchEulerDiscreteScheduler(BaseScheduler):
                 scheduler.config.get("base_shift", 0.5),
                 scheduler.config.get("max_shift", 1.15),
             )
-            steps = kwargs["num_inference_steps"]
-            # Newer ZImagePipeline supplies an explicit linear sigma schedule;
-            # relying on scheduler.sigma_min now produces different timesteps.
-            sigmas = torch.linspace(1.0, 1 / steps, steps).tolist()
-            scheduler.set_timesteps(sigmas=sigmas, device=device, mu=mu)
-            # The known start index avoids a per-request timestep search and its
-            # device-to-host synchronization, matching the upstream pipeline.
-            scheduler.set_begin_index(0)
+            # Preserve the ServerlessT2I Z-Image trajectory used to generate the
+            # reference image. Its pipeline sets sigma_min to zero and lets the
+            # scheduler derive the sequence from the requested step count.
+            scheduler.sigma_min = 0.0
+            scheduler.set_timesteps(kwargs["num_inference_steps"], device=device, mu=mu)
             return {"timesteps": scheduler.timesteps}
 
         latents = kwargs["latents"]
@@ -97,3 +95,11 @@ class ZImageFlowMatchEulerDiscreteScheduler(BaseScheduler):
             return_dict=False,
         )[0]
         return {"output_latents": output}
+
+
+class ZImageTurboFlowMatchEulerDiscreteScheduler(ZImageFlowMatchEulerDiscreteScheduler):
+    """The same scheduler behavior under the Turbo checkpoint identity."""
+
+    @property
+    def id(self) -> str:
+        return ZIMAGE_TURBO_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID
