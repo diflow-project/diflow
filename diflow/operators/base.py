@@ -47,6 +47,16 @@ def has_pretrained_weights(model_path: Optional[str], op_id: str) -> bool:
     return True
 
 
+def require_pretrained_weights(model_path: Optional[str], op_id: str) -> str:
+    """Validate a checkpoint path for operators without a dummy configuration."""
+    if model_path is None:
+        raise ValueError(
+            f"{op_id}: model_path is required; dummy initialization is not supported"
+        )
+    has_pretrained_weights(model_path, op_id)
+    return model_path
+
+
 class Operator(ABC):
     def __init__(self, config: Config = None):
         self.config = config

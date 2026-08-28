@@ -1,463 +1,363 @@
 {
  "cases": {
-  "flux_dev.register_txt2img_workflow|1|1.0": {
+  "flux2_klein.register_txt2img_workflow|1|1.0": {
    "injected": [
     0
    ],
-   "node_count": 9,
+   "node_count": 7,
    "outputs": [
     [
-     "f3193113b47beca73f92",
+     "4a0dad291c4e51fc28b2",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
-     "0d8d9aa1c98084a98481",
+     "0a54d8ecbaa226cd3e16",
      1
     ],
     [
-     "39ca2ab2494cff7ce331",
+     "4a0dad291c4e51fc28b2",
      1
     ],
     [
-     "42cc316babe9240f5917",
+     "50fe2630e7d97521dc76",
      1
     ],
     [
-     "94ef3367ee8d70efa09b",
+     "51c131a7d89d588eb9b6",
      1
     ],
     [
-     "a3c29388a41bc81b10fc",
+     "64120971f869b2aa7a7b",
      1
     ],
     [
-     "b0ac4f0f8e34cf638a37",
+     "6d31a72f5c174e87076a",
      1
     ],
     [
-     "b5a307b92c4307bc2fc8",
-     1
-    ],
-    [
-     "cd13ea51f8edbf1cd6ee",
-     1
-    ],
-    [
-     "f3193113b47beca73f92",
+     "c70efd3fe04409cf216c",
      1
     ]
    ]
   },
-  "flux_dev.register_txt2img_workflow|1|7.5": {
+  "flux2_klein.register_txt2img_workflow|1|7.5": {
    "injected": [
     0
    ],
-   "node_count": 12,
+   "node_count": 7,
    "outputs": [
     [
-     "0957c0e5d70f2a9a2fda",
+     "4a0dad291c4e51fc28b2",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
-     "0957c0e5d70f2a9a2fda",
+     "0a54d8ecbaa226cd3e16",
      1
     ],
     [
-     "0d8d9aa1c98084a98481",
+     "4a0dad291c4e51fc28b2",
      1
     ],
     [
-     "31db8c997209b4cbb918",
+     "50fe2630e7d97521dc76",
      1
     ],
     [
-     "39ca2ab2494cff7ce331",
+     "51c131a7d89d588eb9b6",
      1
     ],
     [
-     "42cc316babe9240f5917",
+     "64120971f869b2aa7a7b",
      1
     ],
     [
-     "94ef3367ee8d70efa09b",
+     "6d31a72f5c174e87076a",
      1
     ],
     [
-     "a3c29388a41bc81b10fc",
-     1
-    ],
-    [
-     "b0ac4f0f8e34cf638a37",
-     1
-    ],
-    [
-     "b5a307b92c4307bc2fc8",
-     1
-    ],
-    [
-     "e7b98672d627e3892a7d",
-     1
-    ],
-    [
-     "ef67d11246f1a5f4a506",
-     1
-    ],
-    [
-     "f98521404a9bf7404335",
+     "c70efd3fe04409cf216c",
      1
     ]
    ]
   },
-  "flux_dev.register_txt2img_workflow|2|1.0": {
+  "flux2_klein.register_txt2img_workflow|2|1.0": {
    "injected": [
     0,
     1
    ],
-   "node_count": 12,
+   "node_count": 10,
    "outputs": [
     [
-     "445c124ba9839a9539ad",
+     "9f575828607c947960b6",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
-     "0d8d9aa1c98084a98481",
+     "0a54d8ecbaa226cd3e16",
      1
     ],
     [
-     "39ca2ab2494cff7ce331",
+     "0b3aac789d2d28e6acc6",
      1
     ],
     [
-     "42cc316babe9240f5917",
+     "36f69b2a510447ff3501",
      1
     ],
     [
-     "445c124ba9839a9539ad",
+     "50fe2630e7d97521dc76",
      1
     ],
     [
-     "4fe7eb36c33d7e15701d",
+     "51c131a7d89d588eb9b6",
      1
     ],
     [
-     "8cc19153e165d71626ba",
+     "64120971f869b2aa7a7b",
      1
     ],
     [
-     "94ef3367ee8d70efa09b",
+     "6d31a72f5c174e87076a",
      1
     ],
     [
-     "9844f6702131eb7ec261",
+     "9f575828607c947960b6",
      1
     ],
     [
-     "a3c29388a41bc81b10fc",
+     "c70efd3fe04409cf216c",
      1
     ],
     [
-     "b0ac4f0f8e34cf638a37",
-     1
-    ],
-    [
-     "b5a307b92c4307bc2fc8",
-     1
-    ],
-    [
-     "cd13ea51f8edbf1cd6ee",
+     "fc253b554589574f4a0f",
      1
     ]
    ]
   },
-  "flux_dev.register_txt2img_workflow|2|7.5": {
+  "flux2_klein.register_txt2img_workflow|2|7.5": {
    "injected": [
     0,
     1
+   ],
+   "node_count": 10,
+   "outputs": [
+    [
+     "9f575828607c947960b6",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0a54d8ecbaa226cd3e16",
+     1
+    ],
+    [
+     "0b3aac789d2d28e6acc6",
+     1
+    ],
+    [
+     "36f69b2a510447ff3501",
+     1
+    ],
+    [
+     "50fe2630e7d97521dc76",
+     1
+    ],
+    [
+     "51c131a7d89d588eb9b6",
+     1
+    ],
+    [
+     "64120971f869b2aa7a7b",
+     1
+    ],
+    [
+     "6d31a72f5c174e87076a",
+     1
+    ],
+    [
+     "9f575828607c947960b6",
+     1
+    ],
+    [
+     "c70efd3fe04409cf216c",
+     1
+    ],
+    [
+     "fc253b554589574f4a0f",
+     1
+    ]
+   ]
+  },
+  "flux2_klein.register_txt2img_workflow|4|1.0": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
    ],
    "node_count": 16,
    "outputs": [
     [
-     "d5935ae49dc532d8433f",
+     "31ded809b381ba5664ab",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
-     "0d8d9aa1c98084a98481",
+     "0a54d8ecbaa226cd3e16",
      1
     ],
     [
-     "1dbac5d12f1ebb5b1f3d",
+     "0b3aac789d2d28e6acc6",
      1
     ],
     [
-     "31db8c997209b4cbb918",
+     "0bd6ae11e21532f4715d",
      1
     ],
     [
-     "39ca2ab2494cff7ce331",
+     "31ded809b381ba5664ab",
      1
     ],
     [
-     "42cc316babe9240f5917",
+     "36f69b2a510447ff3501",
      1
     ],
     [
-     "543dd6958481bf804a12",
+     "40adc36c55e56035453d",
      1
     ],
     [
-     "94ef3367ee8d70efa09b",
+     "48627bdf447afeb5bb74",
      1
     ],
     [
-     "9844f6702131eb7ec261",
+     "50fe2630e7d97521dc76",
      1
     ],
     [
-     "a3c29388a41bc81b10fc",
+     "51c131a7d89d588eb9b6",
      1
     ],
     [
-     "a88279b8426b0bdc29ff",
+     "5cb665b4262eaca91160",
      1
     ],
     [
-     "b0ac4f0f8e34cf638a37",
+     "64120971f869b2aa7a7b",
      1
     ],
     [
-     "b5a307b92c4307bc2fc8",
+     "6d31a72f5c174e87076a",
      1
     ],
     [
-     "d5935ae49dc532d8433f",
+     "7e6ec97f30cf1ec419f9",
      1
     ],
     [
-     "e7b98672d627e3892a7d",
+     "c70efd3fe04409cf216c",
      1
     ],
     [
-     "ef67d11246f1a5f4a506",
+     "db94c0e94edb216f92ec",
      1
     ],
     [
-     "f98521404a9bf7404335",
+     "fc253b554589574f4a0f",
      1
     ]
    ]
   },
-  "flux_dev.register_txt2img_workflow|4|1.0": {
+  "flux2_klein.register_txt2img_workflow|4|7.5": {
    "injected": [
     0,
     1,
     2,
     3
    ],
-   "node_count": 18,
+   "node_count": 16,
    "outputs": [
     [
-     "e0cb26975c0ee7baca32",
+     "31ded809b381ba5664ab",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
-     "0d8d9aa1c98084a98481",
+     "0a54d8ecbaa226cd3e16",
      1
     ],
     [
-     "334a5eae93a0d098d942",
+     "0b3aac789d2d28e6acc6",
      1
     ],
     [
-     "39ca2ab2494cff7ce331",
+     "0bd6ae11e21532f4715d",
      1
     ],
     [
-     "3bef9221b80219786eb5",
+     "31ded809b381ba5664ab",
      1
     ],
     [
-     "42cc316babe9240f5917",
+     "36f69b2a510447ff3501",
      1
     ],
     [
-     "4fe7eb36c33d7e15701d",
+     "40adc36c55e56035453d",
      1
     ],
     [
-     "53212664b43b8f67fbc4",
+     "48627bdf447afeb5bb74",
      1
     ],
     [
-     "53bb236077e8a96f82e7",
+     "50fe2630e7d97521dc76",
      1
     ],
     [
-     "8500acbe0eccea19315a",
+     "51c131a7d89d588eb9b6",
      1
     ],
     [
-     "8cc19153e165d71626ba",
+     "5cb665b4262eaca91160",
      1
     ],
     [
-     "94ef3367ee8d70efa09b",
+     "64120971f869b2aa7a7b",
      1
     ],
     [
-     "9844f6702131eb7ec261",
+     "6d31a72f5c174e87076a",
      1
     ],
     [
-     "a3c29388a41bc81b10fc",
+     "7e6ec97f30cf1ec419f9",
      1
     ],
     [
-     "b0ac4f0f8e34cf638a37",
+     "c70efd3fe04409cf216c",
      1
     ],
     [
-     "b5a307b92c4307bc2fc8",
+     "db94c0e94edb216f92ec",
      1
     ],
     [
-     "bbb053ae233c5d25f54a",
-     1
-    ],
-    [
-     "cd13ea51f8edbf1cd6ee",
-     1
-    ],
-    [
-     "e0cb26975c0ee7baca32",
-     1
-    ]
-   ]
-  },
-  "flux_dev.register_txt2img_workflow|4|7.5": {
-   "injected": [
-    0,
-    1,
-    2,
-    3
-   ],
-   "node_count": 24,
-   "outputs": [
-    [
-     "039351cbe6c15c6168f4",
-     "image",
-     "output_img"
-    ]
-   ],
-   "signatures": [
-    [
-     "039351cbe6c15c6168f4",
-     1
-    ],
-    [
-     "0d8d9aa1c98084a98481",
-     1
-    ],
-    [
-     "1dbac5d12f1ebb5b1f3d",
-     1
-    ],
-    [
-     "21527f3105bc9f33eb6f",
-     1
-    ],
-    [
-     "31db8c997209b4cbb918",
-     1
-    ],
-    [
-     "39ca2ab2494cff7ce331",
-     1
-    ],
-    [
-     "3bef9221b80219786eb5",
-     1
-    ],
-    [
-     "42cc316babe9240f5917",
-     1
-    ],
-    [
-     "4f45900dbd763504e586",
-     1
-    ],
-    [
-     "53bb236077e8a96f82e7",
-     1
-    ],
-    [
-     "543dd6958481bf804a12",
-     1
-    ],
-    [
-     "604d30d69f2fb6efa268",
-     1
-    ],
-    [
-     "70f9c76ba952aa007382",
-     1
-    ],
-    [
-     "94ef3367ee8d70efa09b",
-     1
-    ],
-    [
-     "9844f6702131eb7ec261",
-     1
-    ],
-    [
-     "9873b9c331d5542f36aa",
-     1
-    ],
-    [
-     "a3c29388a41bc81b10fc",
-     1
-    ],
-    [
-     "a88279b8426b0bdc29ff",
-     1
-    ],
-    [
-     "b0ac4f0f8e34cf638a37",
-     1
-    ],
-    [
-     "b5a307b92c4307bc2fc8",
-     1
-    ],
-    [
-     "e7b98672d627e3892a7d",
-     1
-    ],
-    [
-     "edf9579e72e5f9b5662c",
-     1
-    ],
-    [
-     "ef67d11246f1a5f4a506",
-     1
-    ],
-    [
-     "f98521404a9bf7404335",
+     "fc253b554589574f4a0f",
      1
     ]
    ]
@@ -1602,14 +1502,14 @@
     ]
    ]
   },
-  "flux_schnell.register_txt2img_workflow|1|1.0": {
+  "flux_dev.register_txt2img_workflow|1|1.0": {
    "injected": [
     0
    ],
    "node_count": 9,
    "outputs": [
     [
-     "8f147ad5ff0b719e8863",
+     "f3193113b47beca73f92",
      "image",
      "output_img"
     ]
@@ -1624,15 +1524,7 @@
      1
     ],
     [
-     "76b62766b149337f16d5",
-     1
-    ],
-    [
-     "8f147ad5ff0b719e8863",
-     1
-    ],
-    [
-     "92f3d61d56d1f2a46c0a",
+     "42cc316babe9240f5917",
      1
     ],
     [
@@ -1644,30 +1536,46 @@
      1
     ],
     [
-     "e9746401d18d8d8c41f0",
+     "b0ac4f0f8e34cf638a37",
      1
     ],
     [
-     "f6625c8df0e65ad8dab8",
+     "b5a307b92c4307bc2fc8",
+     1
+    ],
+    [
+     "cd13ea51f8edbf1cd6ee",
+     1
+    ],
+    [
+     "f3193113b47beca73f92",
      1
     ]
    ]
   },
-  "flux_schnell.register_txt2img_workflow|1|7.5": {
+  "flux_dev.register_txt2img_workflow|1|7.5": {
    "injected": [
     0
    ],
    "node_count": 12,
    "outputs": [
     [
-     "e9b0d89e9997e0f6f124",
+     "0957c0e5d70f2a9a2fda",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
+     "0957c0e5d70f2a9a2fda",
+     1
+    ],
+    [
      "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "31db8c997209b4cbb918",
      1
     ],
     [
@@ -1675,11 +1583,7 @@
      1
     ],
     [
-     "42016022aa382f562f04",
-     1
-    ],
-    [
-     "76b62766b149337f16d5",
+     "42cc316babe9240f5917",
      1
     ],
     [
@@ -1687,11 +1591,15 @@
      1
     ],
     [
-     "9e2877c9b78de9c6c6f6",
+     "a3c29388a41bc81b10fc",
      1
     ],
     [
-     "a3c29388a41bc81b10fc",
+     "b0ac4f0f8e34cf638a37",
+     1
+    ],
+    [
+     "b5a307b92c4307bc2fc8",
      1
     ],
     [
@@ -1699,15 +1607,7 @@
      1
     ],
     [
-     "e9746401d18d8d8c41f0",
-     1
-    ],
-    [
-     "e9b0d89e9997e0f6f124",
-     1
-    ],
-    [
-     "f6625c8df0e65ad8dab8",
+     "ef67d11246f1a5f4a506",
      1
     ],
     [
@@ -1716,7 +1616,7 @@
     ]
    ]
   },
-  "flux_schnell.register_txt2img_workflow|2|1.0": {
+  "flux_dev.register_txt2img_workflow|2|1.0": {
    "injected": [
     0,
     1
@@ -1724,7 +1624,7 @@
    "node_count": 12,
    "outputs": [
     [
-     "1edf338d39f20a690985",
+     "445c124ba9839a9539ad",
      "image",
      "output_img"
     ]
@@ -1735,19 +1635,23 @@
      1
     ],
     [
-     "1edf338d39f20a690985",
-     1
-    ],
-    [
      "39ca2ab2494cff7ce331",
      1
     ],
     [
-     "76b62766b149337f16d5",
+     "42cc316babe9240f5917",
      1
     ],
     [
-     "92f3d61d56d1f2a46c0a",
+     "445c124ba9839a9539ad",
+     1
+    ],
+    [
+     "4fe7eb36c33d7e15701d",
+     1
+    ],
+    [
+     "8cc19153e165d71626ba",
      1
     ],
     [
@@ -1755,7 +1659,7 @@
      1
     ],
     [
-     "a2ec5e2c7239aa74299e",
+     "9844f6702131eb7ec261",
      1
     ],
     [
@@ -1763,24 +1667,20 @@
      1
     ],
     [
-     "bc69c5c4bc2a77b70dc2",
+     "b0ac4f0f8e34cf638a37",
      1
     ],
     [
-     "e9746401d18d8d8c41f0",
+     "b5a307b92c4307bc2fc8",
      1
     ],
     [
-     "f08198c5daf7f6575447",
-     1
-    ],
-    [
-     "f6625c8df0e65ad8dab8",
+     "cd13ea51f8edbf1cd6ee",
      1
     ]
    ]
   },
-  "flux_schnell.register_txt2img_workflow|2|7.5": {
+  "flux_dev.register_txt2img_workflow|2|7.5": {
    "injected": [
     0,
     1
@@ -1788,7 +1688,7 @@
    "node_count": 16,
    "outputs": [
     [
-     "8042e3f7bec95ac1c86c",
+     "d5935ae49dc532d8433f",
      "image",
      "output_img"
     ]
@@ -1799,23 +1699,23 @@
      1
     ],
     [
+     "1dbac5d12f1ebb5b1f3d",
+     1
+    ],
+    [
+     "31db8c997209b4cbb918",
+     1
+    ],
+    [
      "39ca2ab2494cff7ce331",
      1
     ],
     [
-     "3d01671f788e5879a743",
+     "42cc316babe9240f5917",
      1
     ],
     [
-     "42016022aa382f562f04",
-     1
-    ],
-    [
-     "76b62766b149337f16d5",
-     1
-    ],
-    [
-     "8042e3f7bec95ac1c86c",
+     "543dd6958481bf804a12",
      1
     ],
     [
@@ -1823,11 +1723,7 @@
      1
     ],
     [
-     "9e2877c9b78de9c6c6f6",
-     1
-    ],
-    [
-     "a2a8cf1690265f4b57d9",
+     "9844f6702131eb7ec261",
      1
     ],
     [
@@ -1835,7 +1731,19 @@
      1
     ],
     [
-     "b5f15a11a858a24741a3",
+     "a88279b8426b0bdc29ff",
+     1
+    ],
+    [
+     "b0ac4f0f8e34cf638a37",
+     1
+    ],
+    [
+     "b5a307b92c4307bc2fc8",
+     1
+    ],
+    [
+     "d5935ae49dc532d8433f",
      1
     ],
     [
@@ -1843,15 +1751,7 @@
      1
     ],
     [
-     "e9746401d18d8d8c41f0",
-     1
-    ],
-    [
-     "f08198c5daf7f6575447",
-     1
-    ],
-    [
-     "f6625c8df0e65ad8dab8",
+     "ef67d11246f1a5f4a506",
      1
     ],
     [
@@ -1860,7 +1760,7 @@
     ]
    ]
   },
-  "flux_schnell.register_txt2img_workflow|4|1.0": {
+  "flux_dev.register_txt2img_workflow|4|1.0": {
    "injected": [
     0,
     1,
@@ -1870,7 +1770,7 @@
    "node_count": 18,
    "outputs": [
     [
-     "79d88e0deeb8fd844b14",
+     "e0cb26975c0ee7baca32",
      "image",
      "output_img"
     ]
@@ -1881,11 +1781,7 @@
      1
     ],
     [
-     "16804345c5cdba5f5832",
-     1
-    ],
-    [
-     "172d72932be811556089",
+     "334a5eae93a0d098d942",
      1
     ],
     [
@@ -1893,27 +1789,31 @@
      1
     ],
     [
-     "3aa96e45dfe5d023fe51",
+     "3bef9221b80219786eb5",
      1
     ],
     [
-     "448bd6f84097324ec3b9",
+     "42cc316babe9240f5917",
      1
     ],
     [
-     "6f4f7c4be60055c067cb",
+     "4fe7eb36c33d7e15701d",
      1
     ],
     [
-     "76b62766b149337f16d5",
+     "53212664b43b8f67fbc4",
      1
     ],
     [
-     "79d88e0deeb8fd844b14",
+     "53bb236077e8a96f82e7",
      1
     ],
     [
-     "92f3d61d56d1f2a46c0a",
+     "8500acbe0eccea19315a",
+     1
+    ],
+    [
+     "8cc19153e165d71626ba",
      1
     ],
     [
@@ -1921,11 +1821,7 @@
      1
     ],
     [
-     "983da7868380376c870c",
-     1
-    ],
-    [
-     "a2ec5e2c7239aa74299e",
+     "9844f6702131eb7ec261",
      1
     ],
     [
@@ -1933,24 +1829,28 @@
      1
     ],
     [
-     "bc69c5c4bc2a77b70dc2",
+     "b0ac4f0f8e34cf638a37",
      1
     ],
     [
-     "e9746401d18d8d8c41f0",
+     "b5a307b92c4307bc2fc8",
      1
     ],
     [
-     "f08198c5daf7f6575447",
+     "bbb053ae233c5d25f54a",
      1
     ],
     [
-     "f6625c8df0e65ad8dab8",
+     "cd13ea51f8edbf1cd6ee",
+     1
+    ],
+    [
+     "e0cb26975c0ee7baca32",
      1
     ]
    ]
   },
-  "flux_schnell.register_txt2img_workflow|4|7.5": {
+  "flux_dev.register_txt2img_workflow|4|7.5": {
    "injected": [
     0,
     1,
@@ -1960,18 +1860,30 @@
    "node_count": 24,
    "outputs": [
     [
-     "86b4036e52b56461cfb4",
+     "039351cbe6c15c6168f4",
      "image",
      "output_img"
     ]
    ],
    "signatures": [
     [
+     "039351cbe6c15c6168f4",
+     1
+    ],
+    [
      "0d8d9aa1c98084a98481",
      1
     ],
     [
-     "1e53a2b334b0700266f6",
+     "1dbac5d12f1ebb5b1f3d",
+     1
+    ],
+    [
+     "21527f3105bc9f33eb6f",
+     1
+    ],
+    [
+     "31db8c997209b4cbb918",
      1
     ],
     [
@@ -1979,23 +1891,31 @@
      1
     ],
     [
-     "3d01671f788e5879a743",
+     "3bef9221b80219786eb5",
      1
     ],
     [
-     "42016022aa382f562f04",
+     "42cc316babe9240f5917",
      1
     ],
     [
-     "448bd6f84097324ec3b9",
+     "4f45900dbd763504e586",
      1
     ],
     [
-     "76b62766b149337f16d5",
+     "53bb236077e8a96f82e7",
      1
     ],
     [
-     "86b4036e52b56461cfb4",
+     "543dd6958481bf804a12",
+     1
+    ],
+    [
+     "604d30d69f2fb6efa268",
+     1
+    ],
+    [
+     "70f9c76ba952aa007382",
      1
     ],
     [
@@ -2003,15 +1923,11 @@
      1
     ],
     [
-     "983da7868380376c870c",
+     "9844f6702131eb7ec261",
      1
     ],
     [
-     "9e2877c9b78de9c6c6f6",
-     1
-    ],
-    [
-     "a2a8cf1690265f4b57d9",
+     "9873b9c331d5542f36aa",
      1
     ],
     [
@@ -2019,23 +1935,15 @@
      1
     ],
     [
-     "b5f15a11a858a24741a3",
+     "a88279b8426b0bdc29ff",
      1
     ],
     [
-     "c2b21686a01d2421030f",
+     "b0ac4f0f8e34cf638a37",
      1
     ],
     [
-     "c376c5661791752b41a3",
-     1
-    ],
-    [
-     "cd6c661a7c2057040eea",
-     1
-    ],
-    [
-     "e6e36a98a79a9aca804c",
+     "b5a307b92c4307bc2fc8",
      1
     ],
     [
@@ -2043,19 +1951,11 @@
      1
     ],
     [
-     "e96c09670fd8b5f9e4cb",
+     "edf9579e72e5f9b5662c",
      1
     ],
     [
-     "e9746401d18d8d8c41f0",
-     1
-    ],
-    [
-     "f08198c5daf7f6575447",
-     1
-    ],
-    [
-     "f6625c8df0e65ad8dab8",
+     "ef67d11246f1a5f4a506",
      1
     ],
     [
@@ -3200,6 +3100,1272 @@
     ],
     [
      "f98521404a9bf7404335",
+     1
+    ]
+   ]
+  },
+  "flux_schnell.register_txt2img_workflow|1|1.0": {
+   "injected": [
+    0
+   ],
+   "node_count": 9,
+   "outputs": [
+    [
+     "8f147ad5ff0b719e8863",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "39ca2ab2494cff7ce331",
+     1
+    ],
+    [
+     "76b62766b149337f16d5",
+     1
+    ],
+    [
+     "8f147ad5ff0b719e8863",
+     1
+    ],
+    [
+     "92f3d61d56d1f2a46c0a",
+     1
+    ],
+    [
+     "94ef3367ee8d70efa09b",
+     1
+    ],
+    [
+     "a3c29388a41bc81b10fc",
+     1
+    ],
+    [
+     "e9746401d18d8d8c41f0",
+     1
+    ],
+    [
+     "f6625c8df0e65ad8dab8",
+     1
+    ]
+   ]
+  },
+  "flux_schnell.register_txt2img_workflow|1|7.5": {
+   "injected": [
+    0
+   ],
+   "node_count": 12,
+   "outputs": [
+    [
+     "e9b0d89e9997e0f6f124",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "39ca2ab2494cff7ce331",
+     1
+    ],
+    [
+     "42016022aa382f562f04",
+     1
+    ],
+    [
+     "76b62766b149337f16d5",
+     1
+    ],
+    [
+     "94ef3367ee8d70efa09b",
+     1
+    ],
+    [
+     "9e2877c9b78de9c6c6f6",
+     1
+    ],
+    [
+     "a3c29388a41bc81b10fc",
+     1
+    ],
+    [
+     "e7b98672d627e3892a7d",
+     1
+    ],
+    [
+     "e9746401d18d8d8c41f0",
+     1
+    ],
+    [
+     "e9b0d89e9997e0f6f124",
+     1
+    ],
+    [
+     "f6625c8df0e65ad8dab8",
+     1
+    ],
+    [
+     "f98521404a9bf7404335",
+     1
+    ]
+   ]
+  },
+  "flux_schnell.register_txt2img_workflow|2|1.0": {
+   "injected": [
+    0,
+    1
+   ],
+   "node_count": 12,
+   "outputs": [
+    [
+     "1edf338d39f20a690985",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "1edf338d39f20a690985",
+     1
+    ],
+    [
+     "39ca2ab2494cff7ce331",
+     1
+    ],
+    [
+     "76b62766b149337f16d5",
+     1
+    ],
+    [
+     "92f3d61d56d1f2a46c0a",
+     1
+    ],
+    [
+     "94ef3367ee8d70efa09b",
+     1
+    ],
+    [
+     "a2ec5e2c7239aa74299e",
+     1
+    ],
+    [
+     "a3c29388a41bc81b10fc",
+     1
+    ],
+    [
+     "bc69c5c4bc2a77b70dc2",
+     1
+    ],
+    [
+     "e9746401d18d8d8c41f0",
+     1
+    ],
+    [
+     "f08198c5daf7f6575447",
+     1
+    ],
+    [
+     "f6625c8df0e65ad8dab8",
+     1
+    ]
+   ]
+  },
+  "flux_schnell.register_txt2img_workflow|2|7.5": {
+   "injected": [
+    0,
+    1
+   ],
+   "node_count": 16,
+   "outputs": [
+    [
+     "8042e3f7bec95ac1c86c",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "39ca2ab2494cff7ce331",
+     1
+    ],
+    [
+     "3d01671f788e5879a743",
+     1
+    ],
+    [
+     "42016022aa382f562f04",
+     1
+    ],
+    [
+     "76b62766b149337f16d5",
+     1
+    ],
+    [
+     "8042e3f7bec95ac1c86c",
+     1
+    ],
+    [
+     "94ef3367ee8d70efa09b",
+     1
+    ],
+    [
+     "9e2877c9b78de9c6c6f6",
+     1
+    ],
+    [
+     "a2a8cf1690265f4b57d9",
+     1
+    ],
+    [
+     "a3c29388a41bc81b10fc",
+     1
+    ],
+    [
+     "b5f15a11a858a24741a3",
+     1
+    ],
+    [
+     "e7b98672d627e3892a7d",
+     1
+    ],
+    [
+     "e9746401d18d8d8c41f0",
+     1
+    ],
+    [
+     "f08198c5daf7f6575447",
+     1
+    ],
+    [
+     "f6625c8df0e65ad8dab8",
+     1
+    ],
+    [
+     "f98521404a9bf7404335",
+     1
+    ]
+   ]
+  },
+  "flux_schnell.register_txt2img_workflow|4|1.0": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "node_count": 18,
+   "outputs": [
+    [
+     "79d88e0deeb8fd844b14",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "16804345c5cdba5f5832",
+     1
+    ],
+    [
+     "172d72932be811556089",
+     1
+    ],
+    [
+     "39ca2ab2494cff7ce331",
+     1
+    ],
+    [
+     "3aa96e45dfe5d023fe51",
+     1
+    ],
+    [
+     "448bd6f84097324ec3b9",
+     1
+    ],
+    [
+     "6f4f7c4be60055c067cb",
+     1
+    ],
+    [
+     "76b62766b149337f16d5",
+     1
+    ],
+    [
+     "79d88e0deeb8fd844b14",
+     1
+    ],
+    [
+     "92f3d61d56d1f2a46c0a",
+     1
+    ],
+    [
+     "94ef3367ee8d70efa09b",
+     1
+    ],
+    [
+     "983da7868380376c870c",
+     1
+    ],
+    [
+     "a2ec5e2c7239aa74299e",
+     1
+    ],
+    [
+     "a3c29388a41bc81b10fc",
+     1
+    ],
+    [
+     "bc69c5c4bc2a77b70dc2",
+     1
+    ],
+    [
+     "e9746401d18d8d8c41f0",
+     1
+    ],
+    [
+     "f08198c5daf7f6575447",
+     1
+    ],
+    [
+     "f6625c8df0e65ad8dab8",
+     1
+    ]
+   ]
+  },
+  "flux_schnell.register_txt2img_workflow|4|7.5": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "node_count": 24,
+   "outputs": [
+    [
+     "86b4036e52b56461cfb4",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "0d8d9aa1c98084a98481",
+     1
+    ],
+    [
+     "1e53a2b334b0700266f6",
+     1
+    ],
+    [
+     "39ca2ab2494cff7ce331",
+     1
+    ],
+    [
+     "3d01671f788e5879a743",
+     1
+    ],
+    [
+     "42016022aa382f562f04",
+     1
+    ],
+    [
+     "448bd6f84097324ec3b9",
+     1
+    ],
+    [
+     "76b62766b149337f16d5",
+     1
+    ],
+    [
+     "86b4036e52b56461cfb4",
+     1
+    ],
+    [
+     "94ef3367ee8d70efa09b",
+     1
+    ],
+    [
+     "983da7868380376c870c",
+     1
+    ],
+    [
+     "9e2877c9b78de9c6c6f6",
+     1
+    ],
+    [
+     "a2a8cf1690265f4b57d9",
+     1
+    ],
+    [
+     "a3c29388a41bc81b10fc",
+     1
+    ],
+    [
+     "b5f15a11a858a24741a3",
+     1
+    ],
+    [
+     "c2b21686a01d2421030f",
+     1
+    ],
+    [
+     "c376c5661791752b41a3",
+     1
+    ],
+    [
+     "cd6c661a7c2057040eea",
+     1
+    ],
+    [
+     "e6e36a98a79a9aca804c",
+     1
+    ],
+    [
+     "e7b98672d627e3892a7d",
+     1
+    ],
+    [
+     "e96c09670fd8b5f9e4cb",
+     1
+    ],
+    [
+     "e9746401d18d8d8c41f0",
+     1
+    ],
+    [
+     "f08198c5daf7f6575447",
+     1
+    ],
+    [
+     "f6625c8df0e65ad8dab8",
+     1
+    ],
+    [
+     "f98521404a9bf7404335",
+     1
+    ]
+   ]
+  },
+  "zimage.register_txt2img_workflow|1|1.0": {
+   "injected": [
+    0
+   ],
+   "node_count": 9,
+   "outputs": [
+    [
+     "b823f3e6a7c0cd985758",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "09e42d11689f5a7d8888",
+     1
+    ],
+    [
+     "14ebb6fe70082d8bde23",
+     1
+    ],
+    [
+     "1a98b9b64d79e7385f2e",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "53a913103643d4accea8",
+     1
+    ],
+    [
+     "5e3624e6a9efab93626a",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "b823f3e6a7c0cd985758",
+     1
+    ],
+    [
+     "b9802e5bfac2d5886363",
+     1
+    ]
+   ]
+  },
+  "zimage.register_txt2img_workflow|1|7.5": {
+   "injected": [
+    0
+   ],
+   "node_count": 9,
+   "outputs": [
+    [
+     "b823f3e6a7c0cd985758",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "09e42d11689f5a7d8888",
+     1
+    ],
+    [
+     "14ebb6fe70082d8bde23",
+     1
+    ],
+    [
+     "1a98b9b64d79e7385f2e",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "53a913103643d4accea8",
+     1
+    ],
+    [
+     "5e3624e6a9efab93626a",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "b823f3e6a7c0cd985758",
+     1
+    ],
+    [
+     "b9802e5bfac2d5886363",
+     1
+    ]
+   ]
+  },
+  "zimage.register_txt2img_workflow|2|1.0": {
+   "injected": [
+    0,
+    1
+   ],
+   "node_count": 13,
+   "outputs": [
+    [
+     "7637e790c5652f5b5141",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "018aa55ebaed3c76335d",
+     1
+    ],
+    [
+     "09e42d11689f5a7d8888",
+     1
+    ],
+    [
+     "14ebb6fe70082d8bde23",
+     1
+    ],
+    [
+     "1a98b9b64d79e7385f2e",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "53a913103643d4accea8",
+     1
+    ],
+    [
+     "5e3624e6a9efab93626a",
+     1
+    ],
+    [
+     "70e04389705d238641cb",
+     1
+    ],
+    [
+     "7637e790c5652f5b5141",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "b9802e5bfac2d5886363",
+     1
+    ],
+    [
+     "d869586725888186cea4",
+     1
+    ],
+    [
+     "fbb16da73442481afb2b",
+     1
+    ]
+   ]
+  },
+  "zimage.register_txt2img_workflow|2|7.5": {
+   "injected": [
+    0,
+    1
+   ],
+   "node_count": 13,
+   "outputs": [
+    [
+     "7637e790c5652f5b5141",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "018aa55ebaed3c76335d",
+     1
+    ],
+    [
+     "09e42d11689f5a7d8888",
+     1
+    ],
+    [
+     "14ebb6fe70082d8bde23",
+     1
+    ],
+    [
+     "1a98b9b64d79e7385f2e",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "53a913103643d4accea8",
+     1
+    ],
+    [
+     "5e3624e6a9efab93626a",
+     1
+    ],
+    [
+     "70e04389705d238641cb",
+     1
+    ],
+    [
+     "7637e790c5652f5b5141",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "b9802e5bfac2d5886363",
+     1
+    ],
+    [
+     "d869586725888186cea4",
+     1
+    ],
+    [
+     "fbb16da73442481afb2b",
+     1
+    ]
+   ]
+  },
+  "zimage.register_txt2img_workflow|4|1.0": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "node_count": 21,
+   "outputs": [
+    [
+     "7d07ced2cb40b86010fe",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "018aa55ebaed3c76335d",
+     1
+    ],
+    [
+     "09e42d11689f5a7d8888",
+     1
+    ],
+    [
+     "14ebb6fe70082d8bde23",
+     1
+    ],
+    [
+     "1a98b9b64d79e7385f2e",
+     1
+    ],
+    [
+     "23ac8eb9bdeb9f98446d",
+     1
+    ],
+    [
+     "29bc1dac86d1843d4c5a",
+     1
+    ],
+    [
+     "2c40faf331408171151a",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "3eaf6a4a8e6438c10796",
+     1
+    ],
+    [
+     "4eccf9963ec245155ca2",
+     1
+    ],
+    [
+     "4f8860206d5f62f10ec3",
+     1
+    ],
+    [
+     "53a913103643d4accea8",
+     1
+    ],
+    [
+     "5e3624e6a9efab93626a",
+     1
+    ],
+    [
+     "70e04389705d238641cb",
+     1
+    ],
+    [
+     "7d07ced2cb40b86010fe",
+     1
+    ],
+    [
+     "88ce51768321c626ae42",
+     1
+    ],
+    [
+     "896ce12dd49069f935fb",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "b9802e5bfac2d5886363",
+     1
+    ],
+    [
+     "d869586725888186cea4",
+     1
+    ],
+    [
+     "fbb16da73442481afb2b",
+     1
+    ]
+   ]
+  },
+  "zimage.register_txt2img_workflow|4|7.5": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "node_count": 21,
+   "outputs": [
+    [
+     "7d07ced2cb40b86010fe",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "018aa55ebaed3c76335d",
+     1
+    ],
+    [
+     "09e42d11689f5a7d8888",
+     1
+    ],
+    [
+     "14ebb6fe70082d8bde23",
+     1
+    ],
+    [
+     "1a98b9b64d79e7385f2e",
+     1
+    ],
+    [
+     "23ac8eb9bdeb9f98446d",
+     1
+    ],
+    [
+     "29bc1dac86d1843d4c5a",
+     1
+    ],
+    [
+     "2c40faf331408171151a",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "3eaf6a4a8e6438c10796",
+     1
+    ],
+    [
+     "4eccf9963ec245155ca2",
+     1
+    ],
+    [
+     "4f8860206d5f62f10ec3",
+     1
+    ],
+    [
+     "53a913103643d4accea8",
+     1
+    ],
+    [
+     "5e3624e6a9efab93626a",
+     1
+    ],
+    [
+     "70e04389705d238641cb",
+     1
+    ],
+    [
+     "7d07ced2cb40b86010fe",
+     1
+    ],
+    [
+     "88ce51768321c626ae42",
+     1
+    ],
+    [
+     "896ce12dd49069f935fb",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "b9802e5bfac2d5886363",
+     1
+    ],
+    [
+     "d869586725888186cea4",
+     1
+    ],
+    [
+     "fbb16da73442481afb2b",
+     1
+    ]
+   ]
+  },
+  "zimage_turbo.register_txt2img_workflow|1|1.0": {
+   "injected": [
+    0
+   ],
+   "node_count": 7,
+   "outputs": [
+    [
+     "e18e420d896ccb9e50d8",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "068ffd12e5d78c6eb3e5",
+     1
+    ],
+    [
+     "073e88ca82dfca82d2ec",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "51e79d5a7da0e4afd5fa",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "a77e38cb4462469b1bef",
+     1
+    ],
+    [
+     "e18e420d896ccb9e50d8",
+     1
+    ]
+   ]
+  },
+  "zimage_turbo.register_txt2img_workflow|1|7.5": {
+   "injected": [
+    0
+   ],
+   "node_count": 7,
+   "outputs": [
+    [
+     "e18e420d896ccb9e50d8",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "068ffd12e5d78c6eb3e5",
+     1
+    ],
+    [
+     "073e88ca82dfca82d2ec",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "51e79d5a7da0e4afd5fa",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "a77e38cb4462469b1bef",
+     1
+    ],
+    [
+     "e18e420d896ccb9e50d8",
+     1
+    ]
+   ]
+  },
+  "zimage_turbo.register_txt2img_workflow|2|1.0": {
+   "injected": [
+    0,
+    1
+   ],
+   "node_count": 10,
+   "outputs": [
+    [
+     "b5ff7a2f1ed4b1cd6dd0",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "068ffd12e5d78c6eb3e5",
+     1
+    ],
+    [
+     "073e88ca82dfca82d2ec",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "51e79d5a7da0e4afd5fa",
+     1
+    ],
+    [
+     "62d1dfb032cc0ea7b2c0",
+     1
+    ],
+    [
+     "841ed6c2ce888a4bf458",
+     1
+    ],
+    [
+     "8869367c407d91ec7da2",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "a77e38cb4462469b1bef",
+     1
+    ],
+    [
+     "b5ff7a2f1ed4b1cd6dd0",
+     1
+    ]
+   ]
+  },
+  "zimage_turbo.register_txt2img_workflow|2|7.5": {
+   "injected": [
+    0,
+    1
+   ],
+   "node_count": 10,
+   "outputs": [
+    [
+     "b5ff7a2f1ed4b1cd6dd0",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "068ffd12e5d78c6eb3e5",
+     1
+    ],
+    [
+     "073e88ca82dfca82d2ec",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "51e79d5a7da0e4afd5fa",
+     1
+    ],
+    [
+     "62d1dfb032cc0ea7b2c0",
+     1
+    ],
+    [
+     "841ed6c2ce888a4bf458",
+     1
+    ],
+    [
+     "8869367c407d91ec7da2",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "a77e38cb4462469b1bef",
+     1
+    ],
+    [
+     "b5ff7a2f1ed4b1cd6dd0",
+     1
+    ]
+   ]
+  },
+  "zimage_turbo.register_txt2img_workflow|4|1.0": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "node_count": 16,
+   "outputs": [
+    [
+     "5296c67e395d5a1e2dd8",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "068ffd12e5d78c6eb3e5",
+     1
+    ],
+    [
+     "073e88ca82dfca82d2ec",
+     1
+    ],
+    [
+     "1267eb370648e1cc51da",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "51e79d5a7da0e4afd5fa",
+     1
+    ],
+    [
+     "5296c67e395d5a1e2dd8",
+     1
+    ],
+    [
+     "613144f1448e0e9bc2f4",
+     1
+    ],
+    [
+     "618dfa722fe387c8d0f2",
+     1
+    ],
+    [
+     "62d1dfb032cc0ea7b2c0",
+     1
+    ],
+    [
+     "799ff3f8b05f9ff399ab",
+     1
+    ],
+    [
+     "841ed6c2ce888a4bf458",
+     1
+    ],
+    [
+     "8869367c407d91ec7da2",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "a77e38cb4462469b1bef",
+     1
+    ],
+    [
+     "b30a20591dd0e8d30243",
+     1
+    ],
+    [
+     "e0e94461454e30a188f4",
+     1
+    ]
+   ]
+  },
+  "zimage_turbo.register_txt2img_workflow|4|7.5": {
+   "injected": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "node_count": 16,
+   "outputs": [
+    [
+     "5296c67e395d5a1e2dd8",
+     "image",
+     "output_img"
+    ]
+   ],
+   "signatures": [
+    [
+     "068ffd12e5d78c6eb3e5",
+     1
+    ],
+    [
+     "073e88ca82dfca82d2ec",
+     1
+    ],
+    [
+     "1267eb370648e1cc51da",
+     1
+    ],
+    [
+     "30cf775518dc63b9cd36",
+     1
+    ],
+    [
+     "51e79d5a7da0e4afd5fa",
+     1
+    ],
+    [
+     "5296c67e395d5a1e2dd8",
+     1
+    ],
+    [
+     "613144f1448e0e9bc2f4",
+     1
+    ],
+    [
+     "618dfa722fe387c8d0f2",
+     1
+    ],
+    [
+     "62d1dfb032cc0ea7b2c0",
+     1
+    ],
+    [
+     "799ff3f8b05f9ff399ab",
+     1
+    ],
+    [
+     "841ed6c2ce888a4bf458",
+     1
+    ],
+    [
+     "8869367c407d91ec7da2",
+     1
+    ],
+    [
+     "9572bd4f3002c6e53caf",
+     1
+    ],
+    [
+     "a77e38cb4462469b1bef",
+     1
+    ],
+    [
+     "b30a20591dd0e8d30243",
+     1
+    ],
+    [
+     "e0e94461454e30a188f4",
      1
     ]
    ]

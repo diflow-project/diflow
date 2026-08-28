@@ -140,6 +140,66 @@ def get_op(op: str, model_path: str | None = None):
         )
 
         return FluxSchnellFlowMatchEulerDiscreteScheduler(Config(model_path=model_path))
+    elif op == "ZImageLatentsGenerator":
+        from diflow.operators.custom.zimage_latents_generator import (
+            ZImageLatentsGenerator,
+        )
+
+        return ZImageLatentsGenerator()
+    elif op == "Qwen3_ZImage":
+        from diflow.operators.models.text_encoders.qwen3_zimage import Qwen3_ZImage
+
+        return Qwen3_ZImage(Config(model_path=model_path))
+    elif op == "ZImage":
+        from diflow.operators.models.diffusion_models.zimage import ZImage
+
+        return ZImage(Config(model_path=model_path))
+    elif op == "ZImageTurbo":
+        from diflow.operators.models.diffusion_models.zimage_turbo import ZImageTurbo
+
+        return ZImageTurbo(Config(model_path=model_path))
+    elif op == "ZImageVAE":
+        from diflow.operators.models.autoencoders.zimage_vae import ZImageVAE
+
+        return ZImageVAE(Config(model_path=model_path))
+    elif op == "ZImageFlowMatchEulerDiscreteScheduler":
+        from diflow.operators.schedulers.zimage_flow_match_euler_discrete_scheduler import (
+            ZImageFlowMatchEulerDiscreteScheduler,
+        )
+
+        return ZImageFlowMatchEulerDiscreteScheduler(Config(model_path=model_path))
+    elif op == "ZImageTurboFlowMatchEulerDiscreteScheduler":
+        from diflow.operators.schedulers.zimage_flow_match_euler_discrete_scheduler import (
+            ZImageTurboFlowMatchEulerDiscreteScheduler,
+        )
+
+        return ZImageTurboFlowMatchEulerDiscreteScheduler(Config(model_path=model_path))
+    elif op == "Flux2LatentsGenerator":
+        from diflow.operators.custom.flux2_latents_generator import (
+            Flux2LatentsGenerator,
+        )
+
+        return Flux2LatentsGenerator()
+    elif op == "Qwen3_Flux2Klein":
+        from diflow.operators.models.text_encoders.qwen3_flux2_klein import (
+            Qwen3_Flux2Klein,
+        )
+
+        return Qwen3_Flux2Klein(Config(model_path=model_path))
+    elif op == "Flux2Klein":
+        from diflow.operators.models.diffusion_models.flux_2_klein import Flux2Klein
+
+        return Flux2Klein(Config(model_path=model_path))
+    elif op == "Flux2VAE":
+        from diflow.operators.models.autoencoders.flux_2_vae import Flux2VAE
+
+        return Flux2VAE(Config(model_path=model_path))
+    elif op == "Flux2FlowMatchEulerDiscreteScheduler":
+        from diflow.operators.schedulers.flux2_flow_match_euler_discrete_scheduler import (
+            Flux2FlowMatchEulerDiscreteScheduler,
+        )
+
+        return Flux2FlowMatchEulerDiscreteScheduler(Config(model_path=model_path))
     elif op == "Flux1DevControlNet":
         from diflow.operators.models.adapters.flux_1_dev_controlnet import (
             Flux1DevControlNet,

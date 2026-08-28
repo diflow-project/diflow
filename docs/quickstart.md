@@ -66,6 +66,59 @@ A successful response has this shape:
 }
 ```
 
+## Serve Z-Image, Z-Image Turbo, or FLUX.2 Klein
+
+The migrated text-to-image workflows are also available as built-ins:
+
+```bash
+hf download Tongyi-MAI/Z-Image --local-dir /path/to/Z-Image
+hf download Tongyi-MAI/Z-Image-Turbo --local-dir /path/to/Z-Image-Turbo
+hf download black-forest-labs/FLUX.2-klein-9B --local-dir /path/to/Flux.2-klein
+```
+
+These are the official checkpoint repository IDs. You can also download them,
+along with the existing FLUX.1 checkpoints, by running
+`./scripts/download_models.sh /path/to/checkpoints`.
+
+```bash
+diflow serve --workflow zimage --model-path /path/to/Z-Image
+diflow serve --workflow zimage-turbo --model-path /path/to/Z-Image-Turbo
+diflow serve --workflow flux2-klein --model-path /path/to/Flux.2-klein
+```
+
+They register `zimage_txt2img_workflow`, `zimage_turbo_txt2img_workflow`, and
+`flux2klein_txt2img_workflow`, respectively. The included clients send a
+1024x1024 request and save the returned image under `imgs/`:
+
+```bash
+python workflow_hub/run_zimage_workflow.py
+python workflow_hub/run_zimage_turbo_workflow.py
+python workflow_hub/run_flux2_klein_workflow.py
+```
+
+Z-Image uses its reference pipeline's positive-anchored classifier-free
+guidance and treats any positive `cfg_guidance_scale` as CFG. The distributed
+workflow encodes the negative prompt only on that request branch and executes
+the positive and negative conditioning as two transformer calls per denoising
+step. This differs from the reference pipeline's single batched CFG call, so
+checkpoint-backed latency should be measured before comparing their CFG
+performance. The bundled Z-Image Turbo client preserves the ServerlessT2I
+settings: 9 scheduler steps, seed 0, 1024x1024, and no classifier-free guidance.
+The bundled FLUX.2 Klein checkpoint is step-wise distilled
+(`is_distilled=true`), so its workflow also intentionally exposes no guidance
+or negative-prompt input. Turbo and Klein each execute one transformer call per
+denoising step.
+
+Set `DIFLOW_MODEL_ROOT` if you want the built-ins to derive their default model
+paths instead of passing `--model-path` each time:
+
+```bash
+export DIFLOW_MODEL_ROOT=/path/to/checkpoints
+```
+
+The expected child directories are `Z-Image`, `Z-Image-Turbo`, and
+`Flux.2-klein`.
+
 ## Compose and register a workflow
 
 A Python workflow file exports a type-annotated `create_workflow(...)`

@@ -21,6 +21,16 @@ OPS_THAT_LOAD_WEIGHTS = [
     "Flux1VAE",
     "FluxSchnellFlowMatchEulerDiscreteScheduler",
     "FluxFlowMatchEulerDiscreteScheduler",
+    "ZImage",
+    "Qwen3_ZImage",
+    "ZImageVAE",
+    "ZImageFlowMatchEulerDiscreteScheduler",
+    "ZImageTurbo",
+    "ZImageTurboFlowMatchEulerDiscreteScheduler",
+    "Flux2Klein",
+    "Qwen3_Flux2Klein",
+    "Flux2VAE",
+    "Flux2FlowMatchEulerDiscreteScheduler",
 ]
 
 
@@ -56,8 +66,21 @@ class TestOperatorsRefuseAMissingPath(unittest.TestCase):
                 with self.assertRaises(FileNotFoundError):
                     op.initialize("/dummy/model/path", "cpu")
 
-    def test_text_encoders_require_model_path(self):
-        for op_id in ("CLIP_Flux", "T5_Flux"):
+    def test_operators_without_dummy_configs_require_model_path(self):
+        for op_id in (
+            "CLIP_Flux",
+            "T5_Flux",
+            "ZImage",
+            "Qwen3_ZImage",
+            "ZImageVAE",
+            "ZImageFlowMatchEulerDiscreteScheduler",
+            "ZImageTurbo",
+            "ZImageTurboFlowMatchEulerDiscreteScheduler",
+            "Flux2Klein",
+            "Qwen3_Flux2Klein",
+            "Flux2VAE",
+            "Flux2FlowMatchEulerDiscreteScheduler",
+        ):
             with self.subTest(op=op_id):
                 op = get_op(op_id)
                 with self.assertRaisesRegex(ValueError, "model_path is required"):
