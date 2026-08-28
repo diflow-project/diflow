@@ -35,9 +35,9 @@ def process_response(response):
     for idx, img_str in enumerate(images):
         img = decode_image(img_str)
         output_path = OUTPUT_DIR / (
-            "zimage_turbo_output.png"
+            "zimage_turbo_image.png"
             if len(images) == 1
-            else f"zimage_turbo_output_{idx}.png"
+            else f"zimage_turbo_image_{idx}.png"
         )
         print(f"output_img_{idx}.shape: {img.size}")
         img.save(output_path)

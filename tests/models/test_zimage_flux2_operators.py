@@ -1,5 +1,6 @@
 import pytest
 import torch
+from diffusers import schedulers
 
 from diflow.operators import (
     Config,
@@ -106,7 +107,7 @@ def test_zimage_scheduler_uses_positive_anchored_cfg_and_negates_prediction():
     assert torch.equal(result["output_latents"], torch.tensor([-14.0]))
 
 
-def test_zimage_scheduler_matches_serverless_sigma_min_zero_schedule():
+def test_zimage_scheduler_passes_reference_sigma_schedule():
     class FakeScheduler:
         config = {
             "base_image_seq_len": 256,
@@ -115,9 +116,9 @@ def test_zimage_scheduler_matches_serverless_sigma_min_zero_schedule():
             "max_shift": 1.15,
         }
 
-        def set_timesteps(self, steps, *, device, mu):
-            self.received = (steps, device, mu)
-            self.timesteps = torch.arange(steps)
+        def set_timesteps(self, *, sigmas, device, mu):
+            self.received = (sigmas, device, mu)
+            self.timesteps = torch.tensor(sigmas)
 
     fake = FakeScheduler()
     result = ZImageFlowMatchEulerDiscreteScheduler().execute(
@@ -127,10 +128,34 @@ def test_zimage_scheduler_matches_serverless_sigma_min_zero_schedule():
         num_inference_steps=4,
         latents=torch.zeros(1, 16, 128, 128),
     )
-    assert fake.sigma_min == 0.0
-    assert fake.received[0] == 4
+    assert fake.received[0] == pytest.approx([1.0, 0.75, 0.5, 0.25])
     assert fake.received[1] == "cpu"
-    assert torch.equal(result["timesteps"], torch.arange(4))
+    assert fake.received[2] == pytest.approx(1.15)
+    assert torch.equal(result["timesteps"], torch.tensor([1.0, 0.75, 0.5, 0.25]))
+
+
+@pytest.mark.parametrize("num_inference_steps", [1, 2, 4, 9, 50])
+def test_zimage_scheduler_timesteps_match_pinned_diffusers_reference(
+    num_inference_steps,
+):
+    actual = schedulers.FlowMatchEulerDiscreteScheduler(use_dynamic_shifting=True)
+    reference = schedulers.FlowMatchEulerDiscreteScheduler(use_dynamic_shifting=True)
+    latents = torch.zeros(1, 16, 128, 128)
+
+    result = ZImageFlowMatchEulerDiscreteScheduler().execute(
+        {"scheduler": actual},
+        "cpu",
+        mode="init",
+        num_inference_steps=num_inference_steps,
+        latents=latents,
+    )
+    reference_sigmas = torch.linspace(
+        1.0, 1.0 / num_inference_steps, num_inference_steps
+    ).tolist()
+    reference.set_timesteps(sigmas=reference_sigmas, device="cpu", mu=1.15)
+
+    assert torch.equal(result["timesteps"], reference.timesteps)
+    assert actual.sigmas[-2] > actual.sigmas[-1]
 
 
 def test_new_operators_round_trip_through_registration_serialization():

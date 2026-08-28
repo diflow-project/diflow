@@ -5,6 +5,10 @@ import json
 import pytest
 from PIL import Image
 
+from diflow.interface.benchmark import (
+    DEFAULT_BENCHMARK_BATCH_SIZES,
+    DEFAULT_BENCHMARK_RESOLUTIONS,
+)
 from diflow.interface.workflow import Workflow
 from diflow.interface.workflow_expand import expand_workflow
 from tests.interface.hub_workflows import build_workflow, make_inputs
@@ -30,6 +34,21 @@ def test_new_workflows_build_round_trip_and_expand(name):
     graph = expand_workflow(restored, inputs)
     assert graph.outputs
     assert len(graph.workflow_nodes) > 0
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "zimage.register_txt2img_workflow",
+        "zimage_turbo.register_txt2img_workflow",
+        "flux2_klein.register_txt2img_workflow",
+    ],
+)
+def test_new_workflows_profile_supported_shapes_and_dynamic_batches(name):
+    benchmark = build_workflow(name).benchmark
+
+    assert benchmark.resolutions == DEFAULT_BENCHMARK_RESOLUTIONS
+    assert benchmark.batch_sizes == DEFAULT_BENCHMARK_BATCH_SIZES
 
 
 def _expanded_zimage(scale):
@@ -104,14 +123,14 @@ def test_migrated_clients_preserve_reference_request_parameters():
 @pytest.mark.parametrize(
     ("client", "expected"),
     [
-        (run_zimage_workflow, ["zimage_output_0.png", "zimage_output_1.png"]),
+        (run_zimage_workflow, ["zimage_image_0.png", "zimage_image_1.png"]),
         (
             run_zimage_turbo_workflow,
-            ["zimage_turbo_output_0.png", "zimage_turbo_output_1.png"],
+            ["zimage_turbo_image_0.png", "zimage_turbo_image_1.png"],
         ),
         (
             run_flux2_klein_workflow,
-            ["flux2_klein_output_0.png", "flux2_klein_output_1.png"],
+            ["flux2_klein_image_0.png", "flux2_klein_image_1.png"],
         ),
     ],
 )

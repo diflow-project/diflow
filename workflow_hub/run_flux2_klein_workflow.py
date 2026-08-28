@@ -28,9 +28,9 @@ def process_response(response):
     for idx, img_str in enumerate(images):
         img = decode_image(img_str)
         output_path = OUTPUT_DIR / (
-            "flux2_klein_output.png"
+            "flux2_klein_image.png"
             if len(images) == 1
-            else f"flux2_klein_output_{idx}.png"
+            else f"flux2_klein_image_{idx}.png"
         )
         print(f"output_img_{idx}.shape: {img.size}")
         img.save(output_path)

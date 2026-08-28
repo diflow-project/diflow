@@ -67,11 +67,14 @@ class ZImageFlowMatchEulerDiscreteScheduler(BaseScheduler):
                 scheduler.config.get("base_shift", 0.5),
                 scheduler.config.get("max_shift", 1.15),
             )
-            # Preserve the ServerlessT2I Z-Image trajectory used to generate the
-            # reference image. Its pipeline sets sigma_min to zero and lets the
-            # scheduler derive the sequence from the requested step count.
-            scheduler.sigma_min = 0.0
-            scheduler.set_timesteps(kwargs["num_inference_steps"], device=device, mu=mu)
+            num_inference_steps = kwargs["num_inference_steps"]
+            # Match ZImagePipeline's explicit schedule. Letting the scheduler
+            # interpolate to sigma_min=0 would make the final denoising step a
+            # no-op because FlowMatch also appends a terminal zero sigma.
+            sigmas = torch.linspace(
+                1.0, 1.0 / num_inference_steps, num_inference_steps
+            ).tolist()
+            scheduler.set_timesteps(sigmas=sigmas, device=device, mu=mu)
             return {"timesteps": scheduler.timesteps}
 
         latents = kwargs["latents"]

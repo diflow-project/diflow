@@ -30,8 +30,6 @@ def create_workflow(model_path: str) -> Workflow:
                 "seed": 0,
                 "num_inference_steps": 2,
             },
-            resolutions=((1024, 1024),),
-            batch_sizes=(1,),
             profile_steps=2,
         ),
     )
