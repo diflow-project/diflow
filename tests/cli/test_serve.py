@@ -51,6 +51,8 @@ def test_worker_command_uses_module_entrypoint_and_configs():
 
     assert build_worker_command(args, 2) == [
         "mpirun",
+        "--bind-to",
+        "none",
         "-n",
         "2",
         sys.executable,

@@ -50,6 +50,8 @@ def test_local_launcher_uses_two_mpi_processes_and_forwards_options(tmp_path):
     )
 
     assert capture_path.read_text().splitlines() == [
+        "--bind-to",
+        "none",
         "-n",
         "2",
         str(fake_python),
@@ -81,8 +83,15 @@ def test_launcher_passes_hostfile_only_to_mpirun(tmp_path):
     )
 
     arguments = capture_path.read_text().splitlines()
-    assert arguments[:4] == ["-n", "2", "--hostfile", str(hostfile)]
-    assert arguments[4:7] == [
+    assert arguments[:6] == [
+        "--bind-to",
+        "none",
+        "-n",
+        "2",
+        "--hostfile",
+        str(hostfile),
+    ]
+    assert arguments[6:9] == [
         str(fake_python),
         str(REPO_ROOT / "scripts" / "bw_test.py"),
         "--log-dir",
