@@ -23,6 +23,15 @@ download_if_missing \
     black-forest-labs/FLUX.1-dev \
     "$model_root/FLUX.1-dev"
 download_if_missing \
+    Tongyi-MAI/Z-Image \
+    "$model_root/Z-Image"
+download_if_missing \
+    Tongyi-MAI/Z-Image-Turbo \
+    "$model_root/Z-Image-Turbo"
+download_if_missing \
+    black-forest-labs/FLUX.2-klein-9B \
+    "$model_root/Flux.2-klein"
+download_if_missing \
     XLabs-AI/flux-controlnet-canny-diffusers \
     "$model_root/Xlabs-AI--flux-controlnet-canny-diffusers"
 download_if_missing \

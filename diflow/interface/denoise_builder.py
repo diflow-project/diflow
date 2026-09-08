@@ -47,10 +47,13 @@ def denoise_loop(
     num_inference_steps: NodeIO,
     model=None,
     prompt_embeds: Optional[NodeIO] = None,
+    encoder_attention_mask: Optional[NodeIO] = None,
     pooled_prompt_embeds: Optional[NodeIO] = None,
     negative_prompt_embeds: Optional[NodeIO] = None,
+    negative_encoder_attention_mask: Optional[NodeIO] = None,
     negative_pooled_prompt_embeds: Optional[NodeIO] = None,
     cfg_guidance_scale: Optional[NodeIO] = None,
+    cfg_threshold: float = 1.0,
     guidance_scale: Optional[NodeIO] = None,
     height: Optional[NodeIO] = None,
     width: Optional[NodeIO] = None,
@@ -74,6 +77,9 @@ def denoise_loop(
         cfg_guidance_scale: Enables classifier-free guidance when given. The choice
             is made per request through ``cond``, so one registered workflow serves
             both; ``negative_prompt_embeds`` is then required.
+        cfg_threshold: Selects the CFG branch when ``cfg_guidance_scale`` is above
+            this value. It defaults to the conventional ``1.0``; model families
+            whose pipeline defines CFG for every positive scale can pass ``0.0``.
         guidance_scale: Flux's distilled guidance embedding, which is unrelated to
             classifier-free guidance. Hoisted out of the loop when present.
         step_fn: Replaces the per-step computation. Receives a
@@ -141,7 +147,9 @@ def denoise_loop(
             adapters=adapters,
             adapter_inputs=adapter_inputs,
             cfg_guidance_scale=cfg_guidance_scale,
+            cfg_threshold=cfg_threshold,
             negative_prompt_embeds=negative_prompt_embeds,
+            negative_encoder_attention_mask=negative_encoder_attention_mask,
             negative_pooled_prompt_embeds=negative_pooled_prompt_embeds,
         )
 
@@ -153,6 +161,7 @@ def denoise_loop(
             latents=carry[CARRY_KEY],
             timestep=timesteps[index],
             prompt_embeds=prompt_embeds,
+            encoder_attention_mask=encoder_attention_mask,
             pooled_prompt_embeds=pooled_prompt_embeds,
             guidance=guidance,
             height=height,
@@ -179,7 +188,9 @@ def _default_step(
     adapters,
     adapter_inputs,
     cfg_guidance_scale,
+    cfg_threshold,
     negative_prompt_embeds,
+    negative_encoder_attention_mask,
     negative_pooled_prompt_embeds,
 ) -> StepFn:
     """The standard per-step computation: one model pass, or two under CFG."""
@@ -192,7 +203,9 @@ def _default_step(
     def step(context: DenoiseContext) -> NodeIO:
         def with_cfg():
             uncond = context.with_conditioning(
-                negative_prompt_embeds, negative_pooled_prompt_embeds
+                negative_prompt_embeds,
+                negative_pooled_prompt_embeds,
+                negative_encoder_attention_mask,
             )
             return {
                 CARRY_KEY: scheduler(
@@ -223,6 +236,8 @@ def _default_step(
 
         # Decided per request. Both branches are traced now, so both must be
         # buildable even though only one will end up in the graph.
-        return cond(cfg_guidance_scale > 1.0, with_cfg, without_cfg)[CARRY_KEY]
+        return cond(cfg_guidance_scale > cfg_threshold, with_cfg, without_cfg)[
+            CARRY_KEY
+        ]
 
     return step

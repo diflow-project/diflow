@@ -66,6 +66,12 @@ A successful response has this shape:
 }
 ```
 
+## Other built-in workflows
+
+See [Supported Models and Workflows](./supported_models.md) for the complete
+list of built-ins, official checkpoint IDs, serving commands, and bundled
+clients.
+
 ## Compose and register a workflow
 
 A Python workflow file exports a type-annotated `create_workflow(...)`

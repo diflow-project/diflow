@@ -50,6 +50,18 @@ BUILTIN_WORKFLOWS: Dict[str, BuiltinWorkflow] = {
         target="workflow_hub.flux_dev.register_txt2img_workflow:create_workflow",
         argument_defaults={"model_path": default_model_path("FLUX.1-dev")},
     ),
+    "zimage": BuiltinWorkflow(
+        target="workflow_hub.zimage.register_txt2img_workflow:create_workflow",
+        argument_defaults={"model_path": default_model_path("Z-Image")},
+    ),
+    "zimage-turbo": BuiltinWorkflow(
+        target="workflow_hub.zimage_turbo.register_txt2img_workflow:create_workflow",
+        argument_defaults={"model_path": default_model_path("Z-Image-Turbo")},
+    ),
+    "flux2-klein": BuiltinWorkflow(
+        target="workflow_hub.flux2_klein.register_txt2img_workflow:create_workflow",
+        argument_defaults={"model_path": default_model_path("Flux.2-klein")},
+    ),
 }
 
 
