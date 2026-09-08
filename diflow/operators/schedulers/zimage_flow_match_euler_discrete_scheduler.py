@@ -4,7 +4,7 @@ import torch
 from diffusers import schedulers
 from overrides import override
 
-from diflow.operators.base import require_pretrained_weights
+from diflow.operators.base import has_pretrained_weights
 from diflow.operators.operator_ids import (
     ZIMAGE_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID,
     ZIMAGE_TURBO_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID,
@@ -41,7 +41,11 @@ class ZImageFlowMatchEulerDiscreteScheduler(BaseScheduler):
     def initialize(
         self, model_path: str, device: Union[str, torch.device]
     ) -> Dict[str, Any]:
-        require_pretrained_weights(model_path, self.id)
+        if model_path is None:
+            raise ValueError(
+                f"{self.id}: model_path is required; dummy initialization is not supported"
+            )
+        has_pretrained_weights(model_path, self.id)
         scheduler = schedulers.FlowMatchEulerDiscreteScheduler.from_pretrained(
             model_path, subfolder="scheduler"
         )

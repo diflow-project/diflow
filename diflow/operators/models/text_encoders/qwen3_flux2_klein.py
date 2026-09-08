@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 import torch
 from transformers import Qwen2TokenizerFast, Qwen3ForCausalLM
 
-from diflow.operators.base import Operator, require_pretrained_weights
+from diflow.operators.base import Operator, has_pretrained_weights
 from diflow.operators.operator_ids import QWEN3_FLUX2_KLEIN_ID
 
 
@@ -23,7 +23,11 @@ class Qwen3_Flux2Klein(Operator):
     def initialize(
         self, model_path: str, device: Union[str, torch.device]
     ) -> Dict[str, Any]:
-        require_pretrained_weights(model_path, self.id)
+        if model_path is None:
+            raise ValueError(
+                f"{self.id}: model_path is required; dummy initialization is not supported"
+            )
+        has_pretrained_weights(model_path, self.id)
         text_encoder = Qwen3ForCausalLM.from_pretrained(
             model_path,
             subfolder="text_encoder",

@@ -5,9 +5,9 @@ from diffusers.models.autoencoders import AutoencoderKLFlux2
 from diffusers.pipelines.flux2.image_processor import Flux2ImageProcessor
 from PIL.Image import Image
 
-from diflow.operators.base import Operator, require_pretrained_weights
-from diflow.operators.flux2_utils import prepare_latent_ids_4d
+from diflow.operators.base import Operator, has_pretrained_weights
 from diflow.operators.operator_ids import FLUX_2_VAE_ID
+from diflow.operators.utils.flux2 import prepare_latent_ids_4d
 
 
 def unpack_latents_with_ids(
@@ -51,7 +51,11 @@ class Flux2VAE(Operator):
     def initialize(
         self, model_path: str, device: Union[str, torch.device]
     ) -> Dict[str, Any]:
-        require_pretrained_weights(model_path, self.id)
+        if model_path is None:
+            raise ValueError(
+                f"{self.id}: model_path is required; dummy initialization is not supported"
+            )
+        has_pretrained_weights(model_path, self.id)
         vae = AutoencoderKLFlux2.from_pretrained(
             model_path,
             subfolder="vae",

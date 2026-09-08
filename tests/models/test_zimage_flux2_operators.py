@@ -19,14 +19,14 @@ from diflow.operators import (
 )
 from diflow.operators.base import Operator
 from diflow.operators.custom.flux2_latents_generator import pack_latents
-from diflow.operators.flux2_utils import (
-    compute_empirical_mu,
-    prepare_latent_ids_4d,
-    prepare_text_ids_4d,
-)
 from diflow.operators.models.autoencoders.flux_2_vae import (
     unpack_latents_with_ids,
     unpatchify_latents,
+)
+from diflow.operators.utils.flux2 import (
+    compute_empirical_mu,
+    prepare_latent_ids_4d,
+    prepare_text_ids_4d,
 )
 
 

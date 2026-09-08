@@ -3,7 +3,7 @@ from typing import Any, Dict, Union
 import torch
 from diffusers.models.transformers import ZImageTransformer2DModel
 
-from diflow.operators.base import require_pretrained_weights
+from diflow.operators.base import has_pretrained_weights
 from diflow.operators.models.diffusion_models.base_diffusion_model import (
     BaseDiffusionModel,
 )
@@ -27,7 +27,11 @@ class ZImage(BaseDiffusionModel):
     def initialize(
         self, model_path: str, device: Union[str, torch.device]
     ) -> Dict[str, Any]:
-        require_pretrained_weights(model_path, self.id)
+        if model_path is None:
+            raise ValueError(
+                f"{self.id}: model_path is required; dummy initialization is not supported"
+            )
+        has_pretrained_weights(model_path, self.id)
         transformer = ZImageTransformer2DModel.from_pretrained(
             model_path,
             subfolder="transformer",

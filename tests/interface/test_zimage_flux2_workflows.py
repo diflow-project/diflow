@@ -61,9 +61,14 @@ def test_zimage_cfg_threshold_and_negative_encoder_are_request_conditional():
     without_cfg = _expanded_zimage(0.0)
     with_cfg = _expanded_zimage(0.5)
 
-    assert sum(node.op.id == "Qwen3_ZImage" for node in without_cfg.workflow_nodes) == 1
+    assert (
+        sum(node.op.id == "Qwen3_ZImage" for node in without_cfg.workflow_nodes)
+        == 1
+    )
     assert sum(node.op.id == "ZImage" for node in without_cfg.workflow_nodes) == 2
-    assert sum(node.op.id == "Qwen3_ZImage" for node in with_cfg.workflow_nodes) == 2
+    assert (
+        sum(node.op.id == "Qwen3_ZImage" for node in with_cfg.workflow_nodes) == 2
+    )
     assert sum(node.op.id == "ZImage" for node in with_cfg.workflow_nodes) == 4
 
     model_nodes = [node for node in with_cfg.workflow_nodes if node.op.id == "ZImage"]

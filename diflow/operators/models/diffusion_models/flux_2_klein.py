@@ -3,15 +3,15 @@ from typing import Any, Dict, Union
 import torch
 from diffusers.models.transformers import Flux2Transformer2DModel
 
-from diflow.operators.base import require_pretrained_weights
-from diflow.operators.flux2_utils import (
-    prepare_latent_ids_4d,
-    prepare_text_ids_4d,
-)
+from diflow.operators.base import has_pretrained_weights
 from diflow.operators.models.diffusion_models.base_diffusion_model import (
     BaseDiffusionModel,
 )
 from diflow.operators.operator_ids import FLUX_2_KLEIN_ID
+from diflow.operators.utils.flux2 import (
+    prepare_latent_ids_4d,
+    prepare_text_ids_4d,
+)
 
 
 class Flux2Klein(BaseDiffusionModel):
@@ -32,7 +32,11 @@ class Flux2Klein(BaseDiffusionModel):
     def initialize(
         self, model_path: str, device: Union[str, torch.device]
     ) -> Dict[str, Any]:
-        require_pretrained_weights(model_path, self.id)
+        if model_path is None:
+            raise ValueError(
+                f"{self.id}: model_path is required; dummy initialization is not supported"
+            )
+        has_pretrained_weights(model_path, self.id)
         transformer = Flux2Transformer2DModel.from_pretrained(
             model_path,
             subfolder="transformer",
