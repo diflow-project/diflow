@@ -234,7 +234,7 @@ def validate_transfer_layout(backend: str, hostfile: Optional[str]) -> None:
 
 
 def build_worker_command(args: argparse.Namespace, num_workers: int) -> List[str]:
-    command = ["mpirun", "-n", str(num_workers)]
+    command = ["mpirun", "--bind-to", "none", "-n", str(num_workers)]
     if args.hostfile:
         command.extend(["--hostfile", str(Path(args.hostfile).expanduser())])
     command.extend(

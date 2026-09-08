@@ -75,7 +75,7 @@ fi
 mkdir -p "$log_dir"
 export NVSHMEM_MPI_SUPPORT="${NVSHMEM_MPI_SUPPORT:-1}"
 
-command=("$mpirun_bin" -n 2)
+command=("$mpirun_bin" --bind-to none -n 2)
 if [[ -n "$hostfile" ]]; then
     command+=(--hostfile "$hostfile")
 fi
