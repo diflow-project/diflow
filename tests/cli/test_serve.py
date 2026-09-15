@@ -9,11 +9,13 @@ import pytest
 from diflow.cli.serve import (
     WorkerProcess,
     _pid_is_running,
+    build_api_model_registry,
     build_worker_command,
     read_worker_hostnames,
     resolve_worker_layout,
     validate_transfer_layout,
 )
+from diflow.cli.workflow_loader import LoadedWorkflow
 
 
 def test_local_layout_defaults_to_one_worker():
@@ -78,6 +80,28 @@ def test_host_transfer_rejects_hostfile():
 
 def test_nvshmem_transfer_allows_hostfile():
     validate_transfer_layout("nvshmem", "hosts")
+
+
+def test_api_model_registry_adds_builtin_model_without_exposing_it(tmp_path):
+    model_path = tmp_path / "model"
+    model_path.mkdir()
+    args = argparse.Namespace(api_model_ref=[])
+    loaded = LoadedWorkflow("flux-schnell", "test", lambda: None)
+
+    registry = build_api_model_registry(args, loaded, {"model_path": str(model_path)})
+
+    assert registry == {"flux-schnell": str(model_path.resolve())}
+
+
+def test_api_model_registry_accepts_explicit_admin_alias(tmp_path):
+    model_path = tmp_path / "model"
+    model_path.mkdir()
+    args = argparse.Namespace(api_model_ref=[f"portrait={model_path}"])
+    loaded = LoadedWorkflow("custom", "test", lambda: None)
+
+    assert build_api_model_registry(args, loaded, {}) == {
+        "portrait": str(model_path.resolve())
+    }
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="requires /proc")

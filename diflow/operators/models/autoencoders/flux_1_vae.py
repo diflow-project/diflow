@@ -27,7 +27,9 @@ class Flux1VAE(Operator):
             outputs={"image_embedding": torch.Tensor},
         )
         self.add_execution_mode(
-            "decode_latents", inputs={"latents": torch.Tensor}, outputs={"image": Image}
+            "decode_latents",
+            inputs={"latents": torch.Tensor, "height": int, "width": int},
+            outputs={"image": Image},
         )
 
     @property

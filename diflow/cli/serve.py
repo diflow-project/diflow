@@ -13,7 +13,7 @@ import time
 import uuid
 from dataclasses import replace
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 from benchmark_ops.shapes import parse_batch_sizes, parse_resolutions
 from diflow.backend.data_engine.engine import resolve_transfer_backend
@@ -87,6 +87,16 @@ def _add_common_arguments(parser: argparse.ArgumentParser) -> None:
         default=default_config_path("model_batch.json"),
     )
     parser.add_argument("--enable-early-abort", action="store_true")
+    parser.add_argument(
+        "--api-model-ref",
+        action="append",
+        default=[],
+        metavar="NAME=PATH",
+        help=(
+            "Server-side model alias available to agent-authored WorkflowSpec. "
+            "Repeat for multiple models; filesystem paths are never exposed by the API."
+        ),
+    )
     parser.add_argument(
         "--runtime-profile",
         help="Use an existing runtime profile and skip automatic benchmarking.",
@@ -419,6 +429,44 @@ def _validate_common_args(args: argparse.Namespace) -> None:
         args.runtime_profile = str(profile_path)
 
 
+def build_api_model_registry(
+    args: argparse.Namespace,
+    loaded: LoadedWorkflow,
+    factory_kwargs: Dict[str, Any],
+) -> Dict[str, str]:
+    """Resolve administrator-owned model aliases without exposing paths to agents."""
+
+    registry: Dict[str, str] = {}
+
+    def add(model_ref: str, raw_path: str, source: str) -> None:
+        if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_.-]{0,127}", model_ref):
+            raise ValueError(
+                f"Invalid model ref {model_ref!r} from {source}; expected a letter "
+                "followed by letters, digits, '.', '_' or '-'"
+            )
+        path = Path(raw_path).expanduser().resolve()
+        if not path.exists():
+            raise ValueError(f"Model path from {source} does not exist: {path}")
+        normalized = str(path)
+        existing = registry.get(model_ref)
+        if existing is not None and existing != normalized:
+            raise ValueError(
+                f"Model ref {model_ref!r} maps to both {existing!r} and {normalized!r}"
+            )
+        registry[model_ref] = normalized
+
+    for raw_entry in args.api_model_ref:
+        model_ref, separator, raw_path = raw_entry.partition("=")
+        if not separator or not model_ref or not raw_path:
+            raise ValueError("--api-model-ref must use NAME=PATH")
+        add(model_ref, raw_path, "--api-model-ref")
+
+    model_path = factory_kwargs.get("model_path")
+    if isinstance(model_path, str):
+        add(loaded.name, model_path, f"{loaded.name} model_path")
+    return registry
+
+
 def run(
     args: argparse.Namespace,
     loaded: LoadedWorkflow,
@@ -450,6 +498,7 @@ def run(
             f"{loaded.source} create_workflow() returned {type(workflow).__name__}; "
             "expected diflow.interface.Workflow"
         )
+    model_registry = build_api_model_registry(args, loaded, factory_kwargs)
 
     if args.runtime_profile:
         print(f"Using runtime profile: {args.runtime_profile}")
@@ -480,6 +529,7 @@ def run(
         model_batch_config=args.model_batch_config,
         enable_early_abort=args.enable_early_abort,
         runtime_profile=runtime_profile,
+        model_registry=model_registry,
     )
 
     def on_ready(service_id: Optional[str]) -> None:

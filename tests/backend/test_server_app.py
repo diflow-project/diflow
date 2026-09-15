@@ -1,5 +1,7 @@
 import asyncio
 
+from fastapi.testclient import TestClient
+
 from diflow.backend.server import create_app
 from diflow.interface.workflow import Workflow
 
@@ -45,3 +47,26 @@ def test_create_app_starts_registers_and_stops_service():
         ("worker-stop",),
     ]
     assert ready == ["test-workflow"]
+
+
+def test_create_app_exposes_agent_workflow_api_routes():
+    app = create_app(FakeWorkflowService())
+    paths = {route.path for route in app.routes}
+
+    assert "/api/v1/operators" in paths
+    assert "/api/v1/workflows/validate" in paths
+    assert "/api/v1/workflows/{workflow_id}/runs" in paths
+    assert "/api/v1/prompt-skills/{skill_id}/apply" in paths
+
+
+def test_v1_schema_errors_are_machine_readable_and_old_errors_stay_compatible():
+    app = create_app(FakeWorkflowService(), worker_health_check=lambda: True)
+
+    with TestClient(app) as client:
+        response = client.post("/api/v1/workflows", json={"name": "invalid"})
+        assert response.status_code == 422
+        assert response.json()["error"]["code"] == "SCHEMA_VALIDATION_FAILED"
+
+        response = client.post("/api/workflow/missing/inference", json={})
+        assert response.status_code == 422
+        assert "detail" in response.json()

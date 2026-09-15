@@ -30,6 +30,7 @@ With DiFlow, you can:
 
 - [Install DiFlow](./docs/installation.md)
 - [Quick Start](./docs/quickstart.md)
+- [Agent Workflow API](./docs/workflow-api.md)
 
 ## Contributing
 
