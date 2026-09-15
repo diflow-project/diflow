@@ -1,8 +1,8 @@
 from typing import Any, Dict, Union
 
 import torch
-from diffusers.models.transformers import Flux2Transformer2DModel
 
+from diflow._vendor.diffusers.models.transformers import Flux2Transformer2DModel
 from diflow.operators.base import has_pretrained_weights
 from diflow.operators.models.diffusion_models.base_diffusion_model import (
     BaseDiffusionModel,

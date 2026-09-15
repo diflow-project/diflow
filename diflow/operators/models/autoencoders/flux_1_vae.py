@@ -3,10 +3,10 @@ from typing import Any, Dict, List, Union
 
 import numpy as np
 import torch
-from diffusers.image_processor import VaeImageProcessor
-from diffusers.models.autoencoders import AutoencoderKL
 from PIL.Image import Image
 
+from diflow._vendor.diffusers.image_processor import VaeImageProcessor
+from diflow._vendor.diffusers.models.autoencoders import AutoencoderKL
 from diflow.operators.base import Operator, has_pretrained_weights
 from diflow.operators.operator_ids import FLUX_1_VAE_ID
 from diflow.operators.utils import test_model_memory_allocation

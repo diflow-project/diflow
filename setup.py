@@ -6,7 +6,9 @@ Source and editable installs must use the active Torch environment:
 
 The scheduling core is always built for an installable distribution. The
 NVSHMEM data engine is included only when its optional headers and libraries
-are available; the pure-Python host-memory backend remains usable otherwise.
+are available; release builds require it so the resulting wheel contains both
+transfer backends. The pure-Python host-memory backend remains usable when the
+NVSHMEM runtime is absent from an installation environment.
 """
 
 from __future__ import annotations
@@ -19,8 +21,14 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 import setuptools
+from setuptools.command.build_py import build_py as _build_py
 
 ROOT = Path(__file__).resolve().parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from build_support.vendored_diffusers import materialize_vendored_diffusers
+
 SKIP_NATIVE = os.getenv("DIFLOW_SKIP_NATIVE", "0") == "1"
 SKIP_DATA_ENGINE = os.getenv("DIFLOW_SKIP_DATA_ENGINE", "0") == "1"
 REQUIRE_NVSHMEM = os.getenv("DIFLOW_REQUIRE_NVSHMEM", "0") == "1"
@@ -31,6 +39,18 @@ NATIVE_BUILD_COMMANDS = {
     "editable_wheel",
     "install",
 }
+
+
+class BuildPyWithVendoredDiffusers(_build_py):
+    """Add the pinned Diffusers fork to the wheel's private namespace."""
+
+    def run(self):
+        super().run()
+        source = materialize_vendored_diffusers(ROOT, Path(self.build_lib))
+        print(
+            "Vendored Diffusers "
+            f"{source.version} ({source.commit}) as diflow._vendor.diffusers"
+        )
 
 
 def _native_build_requested() -> bool:
@@ -202,7 +222,7 @@ def _nvshmem_extension(CUDAExtension):
 
 
 ext_modules = []
-cmdclass = {}
+cmdclass = {"build_py": BuildPyWithVendoredDiffusers}
 
 if SKIP_NATIVE and "bdist_wheel" in sys.argv:
     raise RuntimeError(
@@ -225,7 +245,7 @@ if not SKIP_NATIVE:
                 "--no-build-isolation. See docs/installation.md."
             ) from exc
     else:
-        cmdclass = {"build_ext": BuildExtension}
+        cmdclass["build_ext"] = BuildExtension
         ext_modules.append(
             CppExtension(
                 name="diflow.backend.scheduler._scheduling_core",

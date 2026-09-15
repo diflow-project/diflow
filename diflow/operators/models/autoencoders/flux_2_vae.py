@@ -1,10 +1,10 @@
 from typing import Any, Dict, Union
 
 import torch
-from diffusers.models.autoencoders import AutoencoderKLFlux2
-from diffusers.pipelines.flux2.image_processor import Flux2ImageProcessor
 from PIL.Image import Image
 
+from diflow._vendor.diffusers.models.autoencoders import AutoencoderKLFlux2
+from diflow._vendor.diffusers.pipelines.flux2.image_processor import Flux2ImageProcessor
 from diflow.operators.base import Operator, has_pretrained_weights
 from diflow.operators.operator_ids import FLUX_2_VAE_ID
 from diflow.operators.utils.flux2 import prepare_latent_ids_4d

@@ -1,9 +1,11 @@
 from typing import Any, Dict, List, Union
 
 import torch
-from diffusers.loaders.textual_inversion import TextualInversionLoaderMixin
 from transformers import CLIPTextModel, CLIPTokenizer
 
+from diflow._vendor.diffusers.loaders.textual_inversion import (
+    TextualInversionLoaderMixin,
+)
 from diflow.operators.base import Operator, has_pretrained_weights
 from diflow.operators.operator_ids import CLIP_FLUX_ID
 from diflow.operators.utils import (

@@ -1,7 +1,7 @@
 import pytest
 import torch
-from diffusers import schedulers
 
+from diflow._vendor.diffusers import schedulers
 from diflow.operators import (
     Config,
     Flux2FlowMatchEulerDiscreteScheduler,

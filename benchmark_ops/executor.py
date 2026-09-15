@@ -494,7 +494,7 @@ def _coerce_workflow_input(value: Any, data_type: type) -> Any:
     `_deserialize_inputs`; a profile config just names a file, so load it directly.
     """
     if data_type is Image.Image and isinstance(value, str):
-        from diffusers.utils import load_image
+        from diflow._vendor.diffusers.utils import load_image
 
         return load_image(value).convert("RGB")
     return value

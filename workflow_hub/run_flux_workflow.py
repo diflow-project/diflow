@@ -8,9 +8,9 @@ import base64
 import io
 import time
 
-from diffusers.utils import load_image
 from PIL import Image
 
+from diflow._vendor.diffusers.utils import load_image
 from diflow.interface import run_inference
 
 TXT2IMG_PROMPT = "A cat holding a sign that says hello world"

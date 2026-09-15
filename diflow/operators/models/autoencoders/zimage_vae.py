@@ -1,10 +1,10 @@
 from typing import Any, Dict, Union
 
 import torch
-from diffusers.image_processor import VaeImageProcessor
-from diffusers.models.autoencoders import AutoencoderKL
 from PIL.Image import Image
 
+from diflow._vendor.diffusers.image_processor import VaeImageProcessor
+from diflow._vendor.diffusers.models.autoencoders import AutoencoderKL
 from diflow.operators.base import Operator, has_pretrained_weights
 from diflow.operators.operator_ids import ZIMAGE_VAE_ID
 

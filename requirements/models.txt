@@ -1,4 +1,6 @@
-# Model integrations used by the built-in workflows.
+# Model integrations used by the built-in workflows. These dependencies are
+# included in the release wheel's default metadata; this file remains useful for
+# source environments that install requirement groups explicitly.
 accelerate>=1.4,<2
 huggingface-hub>=1.23,<2
 opencv-python>=4.11,<5

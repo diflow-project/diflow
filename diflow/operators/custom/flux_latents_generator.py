@@ -2,8 +2,8 @@ import logging
 from typing import Any, Dict, Union
 
 import torch
-from diffusers.utils.torch_utils import randn_tensor
 
+from diflow._vendor.diffusers.utils.torch_utils import randn_tensor
 from diflow.operators.base import Operator
 from diflow.operators.operator_ids import FLUX_LATENTS_GENERATOR_ID
 

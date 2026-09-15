@@ -3,9 +3,9 @@ from typing import Any, Dict, Union
 
 import numpy as np
 import torch
-from diffusers import schedulers
 from overrides import override
 
+from diflow._vendor.diffusers import schedulers
 from diflow.operators.schedulers.base_scheduler import BaseScheduler
 from diflow.operators.utils import require_model_path
 
