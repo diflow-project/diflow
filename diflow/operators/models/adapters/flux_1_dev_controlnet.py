@@ -2,8 +2,10 @@ import logging
 from typing import Any, Dict, Union
 
 import torch
-from diffusers.models.controlnets.controlnet_flux import FluxControlNetModel
 
+from diflow._vendor.diffusers.models.controlnets.controlnet_flux import (
+    FluxControlNetModel,
+)
 from diflow.operators.base import has_pretrained_weights
 from diflow.operators.flux_utils import (
     prepare_latent_image_ids,

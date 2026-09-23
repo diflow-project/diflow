@@ -3,9 +3,9 @@ from typing import Any, Dict, Union
 
 import numpy as np
 import torch
-from diffusers import schedulers
 from overrides import override
 
+from diflow._vendor.diffusers import schedulers
 from diflow.operators.base import has_pretrained_weights
 from diflow.operators.operator_ids import (
     FLUX_FLOW_MATCH_EULER_DISCRETE_SCHEDULER_ID,

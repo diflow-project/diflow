@@ -9,9 +9,9 @@ import io
 import time
 
 import numpy as np
-from diffusers.utils import load_image
 from PIL import Image
 
+from diflow._vendor.diffusers.utils import load_image
 from diflow.interface import run_inference
 
 CONTROL_IMAGES = {

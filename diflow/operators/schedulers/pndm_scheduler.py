@@ -2,8 +2,8 @@ import logging
 from typing import Any, Dict, Union
 
 import torch
-from diffusers import schedulers
 
+from diflow._vendor.diffusers import schedulers
 from diflow.operators.operator_ids import PNDM_SCHEDULER_ID
 from diflow.operators.schedulers.base_scheduler import BaseScheduler
 from diflow.operators.utils import require_model_path

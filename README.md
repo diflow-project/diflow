@@ -28,6 +28,18 @@ With DiFlow, you can:
 
 ## Getting Started
 
+Install a prebuilt Linux wheel from the matching GitHub release:
+
+```bash
+python -m pip install \
+  --find-links https://github.com/diflow-project/diflow/releases/download/v0.1.0/index.html \
+  diflow==0.1.0
+```
+
+The wheel includes both host-memory and NVSHMEM transfer backends. Host-memory
+transfer works without an NVSHMEM installation; install `diflow[nvshmem]` to
+activate NVSHMEM on a compatible CUDA/Open MPI environment.
+
 - [Install DiFlow](./docs/installation.md)
 - [Quick Start](./docs/quickstart.md)
 

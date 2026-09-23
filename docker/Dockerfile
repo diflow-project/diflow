@@ -71,9 +71,6 @@ RUN set -eux; \
     fi
 
 RUN set -eux; \
-    python -m pip install -e submodules/diffusers -c requirements/constraints-cu124.txt
-
-RUN set -eux; \
     DIFLOW_REQUIRE_NVSHMEM=1 TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}" \
         python -m pip install -e . --no-build-isolation
 

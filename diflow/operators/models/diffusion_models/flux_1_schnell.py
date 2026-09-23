@@ -3,8 +3,8 @@ import time
 from typing import Any, Dict, List, Union
 
 import torch
-from diffusers.models.transformers import FluxTransformer2DModel
 
+from diflow._vendor.diffusers.models.transformers import FluxTransformer2DModel
 from diflow.operators.base import has_pretrained_weights
 from diflow.operators.flux_utils import (
     prepare_latent_image_ids,
