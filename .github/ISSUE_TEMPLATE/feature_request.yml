@@ -1,0 +1,32 @@
+# We referred https://raw.githubusercontent.com/sgl-project/sglang/refs/heads/main/.github/ISSUE_TEMPLATE/2-feature-request.yml
+name: "🚀 Feature request"
+description: Suggest an idea for this project
+title: "[Feature]: "
+labels:
+  - enhancement
+assignees: []
+
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: If this is not a feature request but a general question, please start a discussion at https://github.com/diflow-project/diflow/discussions. Otherwise, it will be closed.
+        - label: Please use English. Otherwise, it will be closed.
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: |
+        Clearly and concisely describe the feature's motivation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-resources
+    attributes:
+      label: Related resources
+      description: |
+        Provide official releases or third-party implementations if available.

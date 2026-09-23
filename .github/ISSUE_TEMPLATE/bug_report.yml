@@ -1,0 +1,61 @@
+# We referred https://raw.githubusercontent.com/sgl-project/sglang/refs/heads/main/.github/ISSUE_TEMPLATE/1-bug-report.yml
+name: "🐛 Bug report"
+description: Report a bug to help us reproduce and fix it.
+title: "[Bug]: "
+labels:
+  - bug
+assignees: []
+
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched related issues but found no solution.
+        - label: The bug persists in the latest version.
+        - label: Issues without environment info and a minimal reproducible example are hard to resolve and may receive no feedback.
+        - label: If this is not a bug report but a general question, please start a discussion at https://github.com/diflow-project/diflow/discussions. Otherwise, it will be closed.
+        - label: Please use English. Otherwise, it will be closed.
+
+  - type: textarea
+    id: describe-bug
+    attributes:
+      label: Describe the bug
+      description: A clear, concise description of what went wrong.
+      placeholder: What happened? What did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal steps, commands, or script that reproduce the bug.
+      placeholder: |
+        1. Install / configure...
+        2. Run...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include DiFlow version, OS, Python, CUDA/GPU, and any other relevant setup. Issues without this may be closed.
+      placeholder: |
+        - DiFlow version:
+        - OS:
+        - Python version:
+        - CUDA / driver:
+        - GPU:
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Optional. Paste relevant error output or stack traces.
+      render: shell
